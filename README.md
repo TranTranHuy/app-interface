@@ -22,8 +22,12 @@ Chỉ có giao diện và điều hướng giữa các màn hình, dữ liệu l
 - src/pages/ThongBao.tsx          Màn – Quản lý thông báo
 - src/pages/SuCo.tsx              Màn – Quản lý sự cố
 - src/pages/ThongTinTaiKhoan.tsx  Màn – Thông tin tài khoản/Profile
+- src/pages/UsagePage.tsx         Màn 7 – Lịch sử sử dụng nước
+- src/pages/ServicePage.tsx       Màn 8 – Dịch vụ & CSKH
+- src/pages/AlertPage.tsx         Màn 9 – Cảnh báo tiêu thụ bất thường
 - src/components/                 Header, BottomNav, ui.tsx (Card, Btn, Chip, Row, Hero, Tile)
 - src/data/mock.ts                Dữ liệu giả
+- src/data/ketNoiApi.ts           Ví dụ kết nối API đang được chú thích, chưa hoạt động
 - src/App.tsx                     Khai báo đường dẫn (routes)
 
-Các màn hình hiện dùng dữ liệu mẫu trong `src/data/mock.ts`. Khi backend cung cấp API, frontend có thể thay nguồn dữ liệu mẫu bằng các lời gọi API tương ứng.
+Các màn hình hiện dùng dữ liệu mẫu. Chỉ thay bằng API sau khi nhận endpoint, cấu trúc dữ liệu và hướng dẫn xác thực từ bên cung cấp.
