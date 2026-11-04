@@ -20,7 +20,7 @@ export function Btn({ children, className = '', to, onClick, outline, disabled }
     if (onClick) onClick()
     else if (to) nav(to)
   }
-  const style = outline ? 'bg-white text-blue-600 border border-blue-600' : 'bg-gradient-to-r from-blue-600 to-sky-500 text-white'
+  const style = outline ? 'bg-white text-[#087fc4] border border-[#168fe0]' : 'bg-gradient-to-r from-[#087fc4] to-[#19a8f5] text-white shadow-sm shadow-sky-200'
   return (
     <button onClick={click} className={`flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold ${style} ${disabled ? 'opacity-40' : ''} ${className}`}>
       {children}
@@ -44,7 +44,7 @@ export function Row({ a, b, className = '' }: { a: string; b: string; className?
 export function Hero({ title, sub, to }: { title: string; sub: string; to?: string }) {
   const nav = useNavigate()
   return (
-    <div onClick={to ? () => nav(to) : undefined} className="mx-4 mb-3 p-4 rounded-2xl bg-gradient-to-r from-sky-200 to-sky-50 flex items-center">
+    <div onClick={to ? () => nav(to) : undefined} className="mx-4 mb-3 p-4 rounded-2xl bg-gradient-to-r from-[#c8eaff] to-[#eff9ff] flex items-center">
       <div className="flex-1">
         <div className="text-xl font-bold">{title}</div>
         <div className="text-sm text-slate-600">{sub}</div>

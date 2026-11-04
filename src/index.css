@@ -2,5 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-html { background: #dbeafe; }
-body { margin: 0; color: #0f2a5c; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+html { background: #e2f3ff; }
+body { margin: 0; color: #123f70; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+
+button, input, select, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
+  outline: 2px solid #168fe0;
+  outline-offset: 2px;
+}
+::selection { background: #b9e5ff; color: #123f70; }

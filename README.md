@@ -19,10 +19,11 @@ Chỉ có giao diện và điều hướng giữa các màn hình, dữ liệu l
 - src/pages/BillsPage.tsx         Màn 3 – Hóa đơn & lịch sử
 - src/pages/BillDetailPage.tsx    Màn 4 – Chi tiết hóa đơn
 - src/pages/PaymentPage.tsx       Màn 5 – Thanh toán QR & biên nhận
-- src/pages/NotificationsPage.tsx Màn 6 – Thông báo
-- src/pages/UsagePage.tsx         Màn 7 – Lịch sử sử dụng nước
-- src/pages/ServicePage.tsx       Màn 8 – Dịch vụ & CSKH
-- src/pages/AlertPage.tsx         Màn 9 – Cảnh báo tiêu thụ bất thường
+- src/pages/ThongBao.tsx          Màn – Quản lý thông báo
+- src/pages/SuCo.tsx              Màn – Quản lý sự cố
+- src/pages/ThongTinTaiKhoan.tsx  Màn – Thông tin tài khoản/Profile
 - src/components/                 Header, BottomNav, ui.tsx (Card, Btn, Chip, Row, Hero, Tile)
 - src/data/mock.ts                Dữ liệu giả
 - src/App.tsx                     Khai báo đường dẫn (routes)
+
+Các màn hình hiện dùng dữ liệu mẫu trong `src/data/mock.ts`. Khi backend cung cấp API, frontend có thể thay nguồn dữ liệu mẫu bằng các lời gọi API tương ứng.
