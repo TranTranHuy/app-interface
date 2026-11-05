@@ -118,7 +118,7 @@ export default function SuCo() {
       <Header title="Mini App" />
       <SuccessToast message={notice} onClose={() => setNotice('')} />
       <main className="space-y-4 px-4">
-        <PageBanner title="Quản lý sự cố" description="Gửi báo sự cố và theo dõi tiến độ xử lý." />
+        <PageBanner title="Quản lý sự cố" description="Gửi báo sự cố và theo dõi tiến độ xử lý." image="/banner-su-co.png" textPosition="center" />
 
         <Card className="!p-4">
           <div className="flex items-center justify-between gap-3">

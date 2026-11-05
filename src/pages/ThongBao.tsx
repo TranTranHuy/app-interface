@@ -80,7 +80,7 @@ export default function ThongBao() {
     <>
       <Header title="Mini App" />
       <main className="space-y-4 px-4">
-        <PageBanner title="Thông báo" description="Thông báo tiền nước, lịch cấp nước và tin tức vận hành." />
+        <PageBanner title="Thông báo" description="Thông báo tiền nước, lịch cấp nước và tin tức vận hành." image="/banner-thong-bao.png" />
 
         <div className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Lọc thông báo">
           {filters.map(([value, label]) => {
