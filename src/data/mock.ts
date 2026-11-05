@@ -16,23 +16,40 @@ export const paidBills = [
 ]
 
 export const mockAccount = {
-  fullName: 'Nguyễn Văn An',
-  phone: '0912 345 678',
-  customerCode: 'HG0123456',
-  address: 'Phường Vị Thanh, Hậu Giang',
-  contractName: 'Hộ gia đình',
+  fullName: 'Lương Cầu Chảy',
+  customerCode: '119310',
+  username: 'luongcauchay',
+  routeCode: 'HTT027G - HTT027G',
+  address: 'Chủ dùng nước, Hậu Giang',
+  phone: '0706534434',
+  taxCode: 'Chưa cập nhật',
+  meterSerial: 'Chưa cập nhật',
+  email: 'Chưa cập nhật',
+  contractName: 'Hợp đồng dịch vụ cấp nước',
   contractStatus: 'Đang hoạt động',
-  currentWaterReading: 1258,
+  contractDetails: {
+    number: 'HD-119310',
+    signedDate: '01/01/2024',
+    serviceAddress: 'Chủ dùng nước, Hậu Giang',
+    customerCode: '119310',
+    provider: 'Công ty Cổ phần Cấp thoát nước Hậu Giang',
+  },
+  currentPeriod: '10/2026',
+  previousWaterReading: 658,
 }
+
+export type NotificationCategory = 'invoice' | 'water_schedule' | 'operations'
 
 export type NotificationItem = {
   id: string
-  category: 'billing' | 'service'
+  category: NotificationCategory
   title: string
   message: string
   createdAt: string
   timeLabel: string
   read: boolean
+  relatedPath?: string
+  detail?: string
   invoice?: {
     period: string
     customerCode: string
@@ -49,7 +66,7 @@ export type NotificationItem = {
 export const notifications: NotificationItem[] = [
   {
     id: 'TB-001',
-    category: 'billing',
+    category: 'invoice',
     title: 'Thông báo tiền nước kỳ 10/2026',
     message: 'Hóa đơn tiền nước kỳ 10/2026 đã được phát hành.',
     createdAt: '2026-10-28T08:30:00+07:00',
@@ -66,24 +83,49 @@ export const notifications: NotificationItem[] = [
       contactPhone: '02933.572.019',
       website: 'https://nuocsachhaugiang.com.vn/',
     },
+    relatedPath: '/bills/detail',
   },
   {
     id: 'TB-002',
-    category: 'billing',
+    category: 'invoice',
+    title: 'Thanh toán hóa đơn thành công',
+    message: 'Hóa đơn tiền nước kỳ 09/2026 đã được thanh toán thành công.',
+    createdAt: '2026-10-22T14:25:00+07:00',
+    timeLabel: '22/10/2026 14:25',
+    read: false,
+    detail: 'Cảm ơn Quý khách đã thanh toán hóa đơn tiền nước kỳ 09/2026. Số tiền: 172.400đ.',
+    relatedPath: '/bills/detail',
+  },
+  {
+    id: 'TB-003',
+    category: 'invoice',
     title: 'Nhắc thanh toán hóa đơn',
     message: 'Hóa đơn tháng 10/2026 sắp đến hạn thanh toán.',
     createdAt: '2026-10-22T09:12:00+07:00',
     timeLabel: '22/10/2026 09:12',
     read: true,
+    detail: 'Hóa đơn tiền nước kỳ 10/2026 sắp đến hạn thanh toán. Vui lòng thanh toán đúng hạn để tránh gián đoạn dịch vụ.',
+    relatedPath: '/bills/detail',
   },
   {
-    id: 'TB-003',
-    category: 'service',
-    title: 'Thông báo tạm ngưng cấp nước',
-    message: 'Từ 22:00 ngày 20/10/2026 đến 05:00 ngày 21/10/2026 tại một phần phường Vị Thanh.',
+    id: 'TB-004',
+    category: 'water_schedule',
+    title: 'Lịch tạm ngưng cấp nước',
+    message: 'Dự kiến tạm ngưng cấp nước để bảo trì hệ thống tại một phần phường Vị Thanh.',
     createdAt: '2026-10-19T16:40:00+07:00',
     timeLabel: '19/10/2026 16:40',
+    read: false,
+    detail: 'Thời gian: từ 22:00 ngày 20/10/2026 đến 05:00 ngày 21/10/2026. Khu vực: một phần phường Vị Thanh. Quý khách vui lòng chủ động trữ nước.',
+  },
+  {
+    id: 'TB-005',
+    category: 'operations',
+    title: 'Cập nhật vận hành hệ thống cấp nước',
+    message: 'Thông tin vận hành và khuyến nghị sử dụng nước sạch.',
+    createdAt: '2026-10-18T10:00:00+07:00',
+    timeLabel: '18/10/2026 10:00',
     read: true,
+    detail: 'Hệ thống cấp nước hoạt động bình thường. Quý khách có thể theo dõi các thông báo vận hành mới tại ứng dụng.',
   },
 ]
 
@@ -120,7 +162,9 @@ export type Incident = {
   description: string
   address: string
   date: string
-  status: string
+  status: 'Mới tiếp nhận' | 'Đang xử lý' | 'Đã hoàn tất'
+  attachments: { name: string; url: string }[]
+  technicianNotes: string[]
 }
 
 export const incidents: Incident[] = [
@@ -133,6 +177,8 @@ export const incidents: Incident[] = [
     address: 'Đường Nguyễn Văn Cừ, phường Vị Thanh',
     date: '2026-10-20',
     status: 'Đang xử lý',
+    attachments: [],
+    technicianNotes: ['Đội kỹ thuật đã tiếp nhận và đang kiểm tra áp lực tuyến ống.'],
   },
   {
     id: 'SC-20261012-002',
@@ -142,7 +188,9 @@ export const incidents: Incident[] = [
     description: 'Nước rò rỉ tại vị trí đồng hồ nước.',
     address: 'Đường Trần Hưng Đạo, phường Vị Thanh',
     date: '2026-10-12',
-    status: 'Đã tiếp nhận',
+    status: 'Mới tiếp nhận',
+    attachments: [],
+    technicianNotes: [],
   },
   {
     id: 'SC-20260928-003',
@@ -153,5 +201,7 @@ export const incidents: Incident[] = [
     address: 'Khu vực phường III, Vị Thanh',
     date: '2026-09-28',
     status: 'Đã hoàn tất',
+    attachments: [],
+    technicianNotes: ['Đã kiểm tra và súc xả tuyến ống. Chất lượng nước đã ổn định.'],
   },
 ]
