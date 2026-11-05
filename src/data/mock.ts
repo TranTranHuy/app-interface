@@ -38,6 +38,59 @@ export const mockAccount = {
   previousWaterReading: 658,
 }
 
+export const thongTinKhachHang = {
+  hoTen: mockAccount.fullName,
+  maKhachHang: mockAccount.customerCode,
+  soDienThoai: mockAccount.phone,
+  soDienThoaiHienThi: '0706 534 434',
+  diaChi: mockAccount.address,
+  loaiKhachHang: 'Hộ gia đình',
+  trangThai: mockAccount.contractStatus,
+}
+
+export const thongKeTruyCap = {
+  tongLuotTruyCap: 290185,
+  soNguoiDangTrucTuyen: 32509,
+}
+
+export const cacThangSuDung = usageMonths
+export const sanLuongSuDung = usageVolumes
+export const bangSuDungNuoc = usageTable.map(({ month, m3, amount }) => ({
+  thang: month,
+  sanLuong: m3,
+  soTien: amount,
+}))
+
+export const hoaDonChuaThanhToan = {
+  soHoaDon: '848166',
+  thang: '10/2026',
+  soTien: '186.500',
+  sanLuong: 15,
+  ngay: '25/10/2026',
+  ngayPhatHanh: '2026-10-20',
+  chiSoCu: 1255,
+  chiSoMoi: 1270,
+  ngayGhi: '18/10/2026',
+  daThanhToan: false,
+}
+
+export const hoaDonDaThanhToan = [
+  { soHoaDon: '848165', thang: '09/2026', soTien: '142.300', sanLuong: 12, ngay: '22/09/2026', ngayPhatHanh: '2026-09-20', chiSoCu: 1243, chiSoMoi: 1255, ngayGhi: '18/09/2026', daThanhToan: true, hoaDonDienTu: { kyHieu: '1K26TNS', maSoThue: 'Chưa có dữ liệu API', maTraCuu: '6712316', ngayKy: '22/09/2026', donViKySo: 'Cấp nước Hậu Giang', pdfUrl: null } },
+  { soHoaDon: '848164', thang: '08/2026', soTien: '165.800', sanLuong: 14, ngay: '20/08/2026', ngayPhatHanh: '2026-08-20', chiSoCu: 1229, chiSoMoi: 1243, ngayGhi: '18/08/2026', daThanhToan: true, hoaDonDienTu: { kyHieu: '1K26TNS', maSoThue: 'Chưa có dữ liệu API', maTraCuu: '6712316', ngayKy: '20/08/2026', donViKySo: 'Cấp nước Hậu Giang', pdfUrl: null } },
+  { soHoaDon: '848163', thang: '07/2026', soTien: '158.000', sanLuong: 14, ngay: '21/07/2026', ngayPhatHanh: '2026-07-20', chiSoCu: 1215, chiSoMoi: 1229, ngayGhi: '18/07/2026', daThanhToan: true, hoaDonDienTu: { kyHieu: '1K26TNS', maSoThue: 'Chưa có dữ liệu API', maTraCuu: '6712316', ngayKy: '21/07/2026', donViKySo: 'Cấp nước Hậu Giang', pdfUrl: null } },
+]
+
+export const donGiaNuocBacGiaDemo = 6800
+export const danhSachHoaDon = [hoaDonChuaThanhToan, ...hoaDonDaThanhToan].map((hoaDon) => ({
+  ...hoaDon,
+  bangKeBacGia: [{
+    bac: 'Bậc giá mẫu',
+    sanLuong: hoaDon.sanLuong,
+    donGia: donGiaNuocBacGiaDemo,
+    thanhTien: hoaDon.sanLuong * donGiaNuocBacGiaDemo,
+  }],
+}))
+
 export type NotificationCategory = 'invoice' | 'water_schedule' | 'operations'
 
 export type NotificationItem = {
@@ -83,7 +136,7 @@ export const notifications: NotificationItem[] = [
       contactPhone: '02933.572.019',
       website: 'https://nuocsachhaugiang.com.vn/',
     },
-    relatedPath: '/bills/detail',
+    relatedPath: '/bills/detail?period=10/2026',
   },
   {
     id: 'TB-002',
@@ -93,8 +146,8 @@ export const notifications: NotificationItem[] = [
     createdAt: '2026-10-22T14:25:00+07:00',
     timeLabel: '22/10/2026 14:25',
     read: false,
-    detail: 'Cảm ơn Quý khách đã thanh toán hóa đơn tiền nước kỳ 09/2026. Số tiền: 172.400đ.',
-    relatedPath: '/bills/detail',
+    detail: 'Cảm ơn Quý khách đã thanh toán hóa đơn tiền nước kỳ 09/2026. Số tiền: 142.300đ.',
+    relatedPath: '/bills/detail?period=09/2026',
   },
   {
     id: 'TB-003',
@@ -105,7 +158,7 @@ export const notifications: NotificationItem[] = [
     timeLabel: '22/10/2026 09:12',
     read: true,
     detail: 'Hóa đơn tiền nước kỳ 10/2026 sắp đến hạn thanh toán. Vui lòng thanh toán đúng hạn để tránh gián đoạn dịch vụ.',
-    relatedPath: '/bills/detail',
+    relatedPath: '/bills/detail?period=10/2026',
   },
   {
     id: 'TB-004',

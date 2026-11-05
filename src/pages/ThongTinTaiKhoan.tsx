@@ -1,10 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import SuccessToast from '../components/SuccessToast'
 import { Card, Row } from '../components/ui'
 import { mockAccount } from '../data/mock'
+import { khoaLuuPhienDangNhap } from '../xacThuc'
 
 type ProfileDialog = 'reading' | 'password' | 'contract' | 'referral' | 'logout' | null
 type WatermarkedImage = { file: File; capturedAt: string; coordinates: string }
@@ -53,6 +54,7 @@ async function addWatermark(image: File): Promise<WatermarkedImage> {
 
 export default function ThongTinTaiKhoan() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [dialog, setDialog] = useState<ProfileDialog>(null)
   const [message, setMessage] = useState('')
   const [formError, setFormError] = useState('')
@@ -64,6 +66,12 @@ export default function ThongTinTaiKhoan() {
   const [previousReading, setPreviousReading] = useState(mockAccount.previousWaterReading)
   const [newReading, setNewReading] = useState('')
   const [referralCode, setReferralCode] = useState('')
+
+  useEffect(() => {
+    if (searchParams.get('dialog') !== 'reading') return
+    setDialog('reading')
+    setSearchParams({}, { replace: true })
+  }, [searchParams, setSearchParams])
 
   useEffect(() => {
     if (!readingImage) {
@@ -167,8 +175,8 @@ export default function ThongTinTaiKhoan() {
   }
 
   function logout() {
-    localStorage.removeItem('authToken')
-    sessionStorage.removeItem('authToken')
+    localStorage.removeItem(khoaLuuPhienDangNhap)
+    sessionStorage.removeItem(khoaLuuPhienDangNhap)
     closeDialog()
     navigate('/login')
   }
@@ -177,7 +185,7 @@ export default function ThongTinTaiKhoan() {
     <>
       <Header title="Thông tin tài khoản" />
       <SuccessToast message={message} onClose={() => setMessage('')} />
-      <main className="space-y-3 px-4">
+      <main className="space-y-3 px-4 pb-24">
         <PageBanner title="Thông tin tài khoản" description="Quản lý hồ sơ, hợp đồng và tiện ích tài khoản." />
 
         <Card className="!p-4">

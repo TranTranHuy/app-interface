@@ -10,6 +10,7 @@ export default function PageBanner({ title, description, image, textPosition = '
     <section
       className={`relative flex min-h-24 items-center overflow-hidden rounded-3xl bg-sky-100 bg-cover px-4 py-3 ${textPosition === 'center' ? 'justify-center bg-center text-center' : 'bg-right'}`}
       style={{ backgroundImage: `url('${image ?? '/banner-nuoc.png'}')` }}
+
     >
       <div className={`absolute inset-0 ${textPosition === 'center' ? 'bg-white/10' : `bg-gradient-to-r ${image ? 'from-[#dff4ff]/75 via-[#e8f7ff]/35' : 'from-[#dff4ff]/95 via-[#e8f7ff]/80'} to-transparent`}`} />
       <div className={`relative z-10 ${textPosition === 'center' ? 'max-w-[65%]' : 'max-w-[74%]'}`}>

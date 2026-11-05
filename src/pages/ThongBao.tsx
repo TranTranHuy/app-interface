@@ -1,28 +1,17 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import { Card } from '../components/ui'
 import { notifications, type NotificationCategory, type NotificationItem } from '../data/mock'
+import { dangKyThayDoiThongBao, danhDauThongBaoDaDoc, danhSachThongBaoDaDoc, layThongBaoDaDoc } from '../data/trangThaiThongBao'
 
 type Filter = 'all' | NotificationCategory
 
-const readStorageKey = 'read-notification-ids'
 const categoryLabels: Record<NotificationCategory, string> = {
   invoice: 'Tiền nước',
   water_schedule: 'Lịch cấp nước',
   operations: 'Tin tức vận hành',
-}
-
-function getReadNotificationIds(): string[] {
-  try {
-    const stored = localStorage.getItem(readStorageKey)
-    if (!stored) return []
-    const parsed: unknown = JSON.parse(stored)
-    return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === 'string') : []
-  } catch {
-    return []
-  }
 }
 
 function NoticeIcon({ category }: { category: NotificationCategory }) {
@@ -48,12 +37,13 @@ function NoticeIcon({ category }: { category: NotificationCategory }) {
 
 export default function ThongBao() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [filter, setFilter] = useState<Filter>('all')
-  const [items, setItems] = useState(() => {
-    const readIds = getReadNotificationIds()
-    return notifications.map((item) => readIds.includes(item.id) ? { ...item, read: true } : item)
-  })
   const [selected, setSelected] = useState<NotificationItem | null>(null)
+  const readState = useSyncExternalStore(dangKyThayDoiThongBao, layThongBaoDaDoc, () => '')
+  const readIds = danhSachThongBaoDaDoc(readState)
+  const notificationId = searchParams.get('notification')
+  const items = notifications
   const filters: [Filter, string][] = [
     ['all', 'Tất cả'],
     ['invoice', 'Tiền nước'],
@@ -62,11 +52,20 @@ export default function ThongBao() {
   ]
   const visibleItems = items.filter((item) => filter === 'all' || item.category === filter)
 
+  useEffect(() => {
+    if (!notificationId) return
+
+    const notification = notifications.find((item) => item.id === notificationId)
+    if (notification) {
+      danhDauThongBaoDaDoc(notification.id)
+      setSelected(notification)
+    }
+    setSearchParams({}, { replace: true })
+  }, [notificationId, setSearchParams])
+
   function openNotification(item: NotificationItem) {
     // TODO: Replace this mock read-state update with the notification API when its contract is available.
-    const updatedReadIds = Array.from(new Set([...getReadNotificationIds(), item.id]))
-    localStorage.setItem(readStorageKey, JSON.stringify(updatedReadIds))
-    setItems((current) => current.map((notice) => notice.id === item.id ? { ...notice, read: true } : notice))
+    danhDauThongBaoDaDoc(item.id)
 
     if (item.relatedPath) {
       navigate(item.relatedPath)
@@ -79,7 +78,7 @@ export default function ThongBao() {
   return (
     <>
       <Header title="Mini App" />
-      <main className="space-y-4 px-4">
+      <main className="space-y-4 px-4 pb-24">
         <PageBanner title="Thông báo" description="Thông báo tiền nước, lịch cấp nước và tin tức vận hành." image="/banner-thong-bao.png" />
 
         <div className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Lọc thông báo">
@@ -110,7 +109,7 @@ export default function ThongBao() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="font-semibold text-slate-900">{item.title}</p>
-                      {!item.read && <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-red-500" aria-label="Chưa đọc" />}
+                      {!item.read && !readIds.has(item.id) && <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-red-500" aria-label="Chưa đọc" />}
                     </div>
                     <p className="mt-1 line-clamp-2 text-sm text-slate-600">{item.message}</p>
                     <div className="mt-2 flex items-center justify-between gap-2">
@@ -138,9 +137,26 @@ export default function ThongBao() {
               <h2 id="notification-detail-title" className="font-semibold text-slate-900">Chi tiết thông báo</h2>
               <button type="button" aria-label="Đóng" onClick={() => setSelected(null)} className="min-h-11 min-w-11 text-xl text-slate-600">×</button>
             </div>
-            <p className="font-semibold text-slate-900">{selected.title}</p>
-            <p className="mt-2 text-sm leading-6 text-slate-700">{selected.detail ?? selected.message}</p>
-            <time className="mt-4 block text-xs text-slate-500" dateTime={selected.createdAt}>{selected.timeLabel}</time>
+            {selected.invoice ? (
+              <article>
+                <h3 className="text-center text-xl font-bold tracking-wide text-[#1676db]">THÔNG BÁO TIỀN NƯỚC</h3>
+                <p className="mt-3 text-right text-sm italic text-slate-500">
+                  Ngày gửi: <time dateTime={selected.createdAt}>{selected.timeLabel.split(' ')[0]}</time>
+                </p>
+                <p className="mt-4 text-sm leading-6 text-slate-800">
+                  Thông báo tiền nước kỳ {selected.invoice.period}. Mã KH: {selected.invoice.customerCode}. CSC: {selected.invoice.previousReading}. CSM: {selected.invoice.currentReading}. TT: {selected.invoice.consumption}. ST: {selected.invoice.amount} đ. Hạn TT đến ngày {selected.invoice.dueDate}. LH: {selected.invoice.contactPhone}. Chi tiết:{' '}
+                  <a href={selected.invoice.website} target="_blank" rel="noreferrer" className="break-all text-[#087fc4] underline">
+                    {selected.invoice.website}
+                  </a>
+                </p>
+              </article>
+            ) : (
+              <>
+                <p className="font-semibold text-slate-900">{selected.title}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-700">{selected.detail ?? selected.message}</p>
+                <time className="mt-4 block text-xs text-slate-500" dateTime={selected.createdAt}>{selected.timeLabel}</time>
+              </>
+            )}
           </section>
         </div>
       )}

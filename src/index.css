@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Dancing Script';
+  src: url('/fonts/DancingScript-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Dancing Script';
+  src: url('/fonts/DancingScript-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 html { background: #e2f3ff; }
 body { margin: 0; color: #123f70; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 
@@ -12,3 +28,41 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   outline-offset: 2px;
 }
 ::selection { background: #b9e5ff; color: #123f70; }
+
+@keyframes invoice-tab-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.invoice-tab-panel {
+  animation: invoice-tab-enter 240ms ease-out both;
+}
+
+@keyframes invoice-chart-bar-enter {
+  from {
+    opacity: 0.4;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.invoice-chart-bar {
+  transform-origin: bottom;
+  animation: invoice-chart-bar-enter 520ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invoice-tab-panel,
+  .invoice-chart-bar {
+    animation: none;
+  }
+}
