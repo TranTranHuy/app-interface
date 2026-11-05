@@ -2,7 +2,7 @@ import { useRef, useState, useSyncExternalStore } from 'react'
 import Header from '../components/Header'
 import BieuTuong from '../components/BieuTuong'
 import { Btn, Card, Chip, Tile } from '../components/ui'
-import { notifications, thongKeTruyCap, thongTinKhachHang } from '../data/mock'
+import { notifications, thongTinKhachHang } from '../data/mock'
 import { dangKyThayDoiThongBao, danhSachThongBaoDaDoc, layThongBaoDaDoc } from '../data/trangThaiThongBao'
 
 export default function TrangChu() {
@@ -47,23 +47,6 @@ export default function TrangChu() {
             <div className="text-xs text-slate-600">Mã KH: {thongTinKhachHang.maKhachHang}</div>
           </div>
           <BieuTuong ten="muiTenTrai" className="relative z-10 h-5 w-5 rotate-180 text-blue-700" />
-        </Card>
-
-        <Card className="space-y-1.5 !py-2">
-          <div className="flex items-center justify-between gap-3 text-xs">
-            <span className="flex items-center gap-1.5 text-slate-600">
-              <BieuTuong ten="bieuDo" className="h-4 w-4 text-blue-600" />
-              Tổng lượt truy cập
-            </span>
-            <b className="text-sm text-blue-800">{thongKeTruyCap.tongLuotTruyCap.toLocaleString('vi-VN')}</b>
-          </div>
-          <div className="flex items-center justify-between gap-3 text-xs">
-            <span className="flex items-center gap-1.5 text-slate-600">
-              <span aria-hidden="true" className="ml-1 h-2 w-2 rounded-full bg-emerald-500" />
-              Đang trực tuyến
-            </span>
-            <b className="text-sm text-emerald-700">{thongKeTruyCap.soNguoiDangTrucTuyen.toLocaleString('vi-VN')}</b>
-          </div>
         </Card>
 
         <Card className="p-4">

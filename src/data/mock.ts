@@ -48,11 +48,6 @@ export const thongTinKhachHang = {
   trangThai: mockAccount.contractStatus,
 }
 
-export const thongKeTruyCap = {
-  tongLuotTruyCap: 290185,
-  soNguoiDangTrucTuyen: 32509,
-}
-
 export const cacThangSuDung = usageMonths
 export const sanLuongSuDung = usageVolumes
 export const bangSuDungNuoc = usageTable.map(({ month, m3, amount }) => ({
