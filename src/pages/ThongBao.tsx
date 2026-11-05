@@ -1,22 +1,34 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import { Card } from '../components/ui'
-import { notifications, type NotificationItem } from '../data/mock'
+import { notifications, type NotificationCategory, type NotificationItem } from '../data/mock'
+import { dangKyThayDoiThongBao, danhDauThongBaoDaDoc, danhSachThongBaoDaDoc, layThongBaoDaDoc } from '../data/trangThaiThongBao'
 
-type Category = 'all' | 'billing' | 'service'
+type Filter = 'all' | NotificationCategory
 
-function NoticeIcon({ category }: { category: NotificationItem['category'] }) {
+const categoryLabels: Record<NotificationCategory, string> = {
+  invoice: 'Tiền nước',
+  water_schedule: 'Lịch cấp nước',
+  operations: 'Tin tức vận hành',
+}
+
+function NoticeIcon({ category }: { category: NotificationCategory }) {
+  const icon = category === 'invoice' ? 'invoice' : category === 'water_schedule' ? 'water' : 'news'
   return (
-    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${category === 'billing' ? 'bg-sky-100 text-[#087fc4]' : 'bg-orange-100 text-orange-600'}`}>
-      {category === 'billing' ? (
+    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${icon === 'invoice' ? 'bg-sky-100 text-[#087fc4]' : icon === 'water' ? 'bg-cyan-100 text-cyan-700' : 'bg-indigo-100 text-indigo-700'}`}>
+      {icon === 'invoice' ? (
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="M6 3.75h8l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.75a1 1 0 0 1 1-1zM14 4v4h4M8 13h8M8 17h8" />
         </svg>
+      ) : icon === 'water' ? (
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11zM9 15a3 3 0 0 0 3 3" />
+        </svg>
       ) : (
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
+          <path d="M4 5h16v12H8l-4 3zM8 9h8M8 13h5" />
         </svg>
       )}
     </span>
@@ -24,71 +36,84 @@ function NoticeIcon({ category }: { category: NotificationItem['category'] }) {
 }
 
 export default function ThongBao() {
-  const [category, setCategory] = useState<Category>('all')
-  const [selected, setSelected] = useState<NotificationItem | null>(null)
+  const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const visibleNotifications = notifications.filter((item) => category === 'all' || item.category === category)
+  const [filter, setFilter] = useState<Filter>('all')
+  const [selected, setSelected] = useState<NotificationItem | null>(null)
+  const readState = useSyncExternalStore(dangKyThayDoiThongBao, layThongBaoDaDoc, () => '')
+  const readIds = danhSachThongBaoDaDoc(readState)
+  const notificationId = searchParams.get('notification')
+  const items = notifications
+  const filters: [Filter, string][] = [
+    ['all', 'Tất cả'],
+    ['invoice', 'Tiền nước'],
+    ['water_schedule', 'Lịch cấp nước'],
+    ['operations', 'Tin tức vận hành'],
+  ]
+  const visibleItems = items.filter((item) => filter === 'all' || item.category === filter)
+
   useEffect(() => {
-    const notificationId = searchParams.get('notification')
     if (!notificationId) return
 
     const notification = notifications.find((item) => item.id === notificationId)
-    if (notification) setSelected(notification)
+    if (notification) {
+      danhDauThongBaoDaDoc(notification.id)
+      setSelected(notification)
+    }
     setSearchParams({}, { replace: true })
-  }, [searchParams, setSearchParams])
+  }, [notificationId, setSearchParams])
 
-  const counts: Record<Category, number> = {
-    all: notifications.length,
-    billing: notifications.filter((item) => item.category === 'billing').length,
-    service: notifications.filter((item) => item.category === 'service').length,
+  function openNotification(item: NotificationItem) {
+    // TODO: Replace this mock read-state update with the notification API when its contract is available.
+    danhDauThongBaoDaDoc(item.id)
+
+    if (item.relatedPath) {
+      navigate(item.relatedPath)
+      return
+    }
+
+    setSelected({ ...item, read: true })
   }
-  const filters: [Category, string][] = [
-    ['all', 'Tất cả'],
-    ['billing', 'Hóa đơn'],
-    ['service', 'Dịch vụ'],
-  ]
 
   return (
     <>
       <Header title="Mini App" />
-      <main className="space-y-4 px-4 pb-24">
-        <PageBanner title="Thông báo" description="Cập nhật nhanh về hóa đơn, cấp nước và dịch vụ." />
+      <main className="space-y-4 px-4">
+        <PageBanner title="Thông báo" description="Thông báo tiền nước, lịch cấp nước và tin tức vận hành." />
 
-        <div className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Phân loại thông báo">
-          {filters.map(([value, label]) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setCategory(value)}
-              aria-pressed={category === value}
-              className={`min-h-11 shrink-0 rounded-full border px-4 text-sm ${category === value ? 'border-[#087fc4] bg-[#087fc4] text-white' : 'border-slate-200 bg-white text-slate-700'}`}
-            >
-              {label} ({counts[value]})
-            </button>
-          ))}
+        <div className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Lọc thông báo">
+          {filters.map(([value, label]) => {
+            const count = value === 'all' ? items.length : items.filter((item) => item.category === value).length
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setFilter(value)}
+                aria-pressed={filter === value}
+                className={`min-h-11 shrink-0 rounded-full border px-4 text-sm ${filter === value ? 'border-[#087fc4] bg-[#087fc4] text-white' : 'border-slate-200 bg-white text-slate-700'}`}
+              >
+                {label} ({count})
+              </button>
+            )
+          })}
         </div>
 
         <section className="space-y-3" aria-label="Danh sách thông báo">
-          <h2 className="text-sm font-semibold text-[#124b84]">Thông báo gần đây</h2>
-          {visibleNotifications.length === 0 && <Card className="border border-slate-100 text-sm text-slate-600">Chưa có thông báo trong mục này.</Card>}
-          {visibleNotifications.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setSelected(item)}
-              className="block w-full text-left"
-            >
-              <Card bg={item.category === 'billing' ? 'bg-white' : 'bg-rose-50/70'} className="border border-slate-100 !p-4">
+          <h2 className="text-sm font-semibold text-[#124b84]">Danh sách thông báo</h2>
+          {visibleItems.length === 0 && <Card className="border border-slate-100 text-sm text-slate-600">Chưa có thông báo trong mục này.</Card>}
+          {visibleItems.map((item) => (
+            <button key={item.id} type="button" onClick={() => openNotification(item)} className="block w-full text-left">
+              <Card className="border border-slate-100 !p-4">
                 <div className="flex items-start gap-3">
                   <NoticeIcon category={item.category} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="font-semibold text-slate-900">{item.title}</p>
-                      {!item.read && <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-red-500" aria-label="Chưa đọc" />}
+                      {!item.read && !readIds.has(item.id) && <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-red-500" aria-label="Chưa đọc" />}
                     </div>
                     <p className="mt-1 line-clamp-2 text-sm text-slate-600">{item.message}</p>
                     <div className="mt-2 flex items-center justify-between gap-2">
-                      <span className="text-xs font-medium text-[#087fc4]">{item.category === 'billing' ? 'Hóa đơn' : 'Cấp nước / dịch vụ'}</span>
+                      <span className="text-xs font-medium text-[#087fc4]">{categoryLabels[item.category]}</span>
                       <time className="text-[11px] text-slate-500" dateTime={item.createdAt}>{item.timeLabel}</time>
                     </div>
                   </div>
@@ -128,7 +153,7 @@ export default function ThongBao() {
             ) : (
               <>
                 <p className="font-semibold text-slate-900">{selected.title}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-700">{selected.message}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-700">{selected.detail ?? selected.message}</p>
                 <time className="mt-4 block text-xs text-slate-500" dateTime={selected.createdAt}>{selected.timeLabel}</time>
               </>
             )}

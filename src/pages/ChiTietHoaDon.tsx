@@ -28,7 +28,7 @@ export default function ChiTietHoaDon() {
     <>
       <Header back="/bills" />
       <h1 className="text-center font-bold text-lg -mt-1 mb-2">Chi tiết hóa đơn</h1>
-      <div className="px-4 space-y-3">
+      <div className="px-4 pb-24 space-y-3">
         <Card bg={hoaDon.daThanhToan ? 'bg-emerald-50' : 'bg-white'} className="flex justify-between">
           <div>
             <b className="flex items-center gap-2"><BieuTuong ten="hoaDon" className="h-6 w-6 text-blue-600" />Hóa đơn tiền nước</b>
@@ -63,6 +63,46 @@ export default function ChiTietHoaDon() {
             <div>Ngày ghi<b className="block text-sm mt-1">{hoaDon.ngayGhi}</b></div>
             <div>Tiêu thụ<b className="block text-base">{hoaDon.sanLuong}</b>m³</div>
           </div>
+        </Card>
+
+        <Card>
+          <div className="flex items-center justify-between gap-2">
+            <b className="flex items-center gap-2"><BieuTuong ten="hoaDon" className="h-5 w-5 text-blue-600" />Bảng kê tiền nước</b>
+            <span className="rounded-full bg-sky-100 px-2 py-1 text-[10px] font-semibold text-sky-700">Giá mẫu</span>
+          </div>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[330px] text-left text-xs">
+              <thead className="border-b border-slate-200 text-slate-500">
+                <tr>
+                  <th scope="col" className="pb-2 pr-2 font-medium">Bậc giá</th>
+                  <th scope="col" className="pb-2 px-2 text-right font-medium">Sản lượng</th>
+                  <th scope="col" className="pb-2 px-2 text-right font-medium">Đơn giá</th>
+                  <th scope="col" className="pb-2 pl-2 text-right font-medium">Tiền nước</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hoaDon.bangKeBacGia.map((bacGia) => (
+                  <tr key={bacGia.bac} className="border-b border-slate-100">
+                    <th scope="row" className="py-2 pr-2 font-medium text-slate-700">{bacGia.bac}</th>
+                    <td className="px-2 py-2 text-right text-slate-700">{bacGia.sanLuong} m³</td>
+                    <td className="px-2 py-2 text-right text-slate-700">{bacGia.donGia.toLocaleString('vi-VN')}đ</td>
+                    <td className="py-2 pl-2 text-right font-semibold text-slate-900">{bacGia.thanhTien.toLocaleString('vi-VN')}đ</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row" colSpan={3} className="pt-2 text-left font-semibold text-slate-700">Tiền nước theo giá mẫu</th>
+                  <td className="pt-2 text-right font-bold text-[#124b84]">
+                    {hoaDon.bangKeBacGia.reduce((tong, bacGia) => tong + bacGia.thanhTien, 0).toLocaleString('vi-VN')}đ
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <p className="mt-2 text-[11px] leading-4 text-slate-500">
+            Đơn giá 6.800đ/m³ dùng để minh họa giao diện; tổng hóa đơn bên dưới vẫn lấy từ dữ liệu mẫu hiện tại.
+          </p>
         </Card>
 
         <Card>

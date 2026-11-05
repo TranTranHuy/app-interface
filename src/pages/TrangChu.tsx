@@ -116,11 +116,11 @@ export default function TrangChu() {
                   >
                     <Card
                       to={`/notifications?notification=${encodeURIComponent(tin.id)}`}
-                      bg={tin.category === 'billing' ? 'bg-white' : 'bg-red-50'}
+                      bg={tin.category === 'invoice' ? 'bg-white' : 'bg-red-50'}
                       className="flex min-h-28 items-start gap-3 border border-slate-100"
                     >
-                      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${tin.category === 'billing' ? 'bg-sky-100 text-blue-600' : 'bg-orange-100 text-orange-600'}`}>
-                        <BieuTuong ten={tin.category === 'billing' ? 'hoaDon' : 'loa'} className="h-5 w-5" />
+                      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${tin.category === 'invoice' ? 'bg-sky-100 text-blue-600' : 'bg-orange-100 text-orange-600'}`}>
+                        <BieuTuong ten={tin.category === 'invoice' ? 'hoaDon' : 'loa'} className="h-5 w-5" />
                       </span>
                       <span className="min-w-0 flex-1">
                         <span className="flex items-start justify-between gap-2">
