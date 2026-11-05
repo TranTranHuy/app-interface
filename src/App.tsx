@@ -13,7 +13,6 @@ import DichVu from './pages/DichVu'
 import CanhBaoBatThuong from './pages/CanhBaoBatThuong'
 import DangNhap from './pages/DangNhap'
 import HuongDanSuDung from './pages/HuongDanSuDung'
-import KhaiBaoChiSoNuoc from './pages/KhaiBaoChiSoNuoc'
 import { daDangNhap } from './xacThuc'
 
 function YeuCauDangNhap() {
@@ -41,7 +40,7 @@ export default function App() {
           <Route path="/usage" element={<LichSuSuDungNuoc />} />
           <Route path="/service" element={<DichVu />} />
           <Route path="/alert" element={<CanhBaoBatThuong />} />
-          <Route path="/khai-bao-chi-so-nuoc" element={<KhaiBaoChiSoNuoc />} />
+          <Route path="/khai-bao-chi-so-nuoc" element={<Navigate to="/profile?dialog=reading" replace />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -1,9 +1,26 @@
+import { useRef, useState } from 'react'
 import Header from '../components/Header'
 import BieuTuong from '../components/BieuTuong'
 import { Btn, Card, Chip, Tile } from '../components/ui'
-import { thongKeTruyCap, thongTinKhachHang } from '../data/mock'
+import { notifications, thongKeTruyCap, thongTinKhachHang } from '../data/mock'
 
 export default function TrangChu() {
+  const danhSachThongBaoRef = useRef<HTMLDivElement>(null)
+  const [viTriThongBao, datViTriThongBao] = useState(0)
+  const tinMoiNhat = [...notifications]
+    .sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
+    .slice(0, 2)
+
+  function chuyenDenThongBao(viTri: number) {
+    const danhSachThongBao = danhSachThongBaoRef.current
+    if (!danhSachThongBao) return
+
+    danhSachThongBao.scrollTo({
+      left: viTri * danhSachThongBao.clientWidth,
+      behavior: 'smooth',
+    })
+  }
+
   return (
     <>
       <Header />
@@ -70,22 +87,71 @@ export default function TrangChu() {
           <Tile icon="nguoiDung" title="Thông tin người dùng" sub="Thông tin khách hàng" to="/profile" color="bg-indigo-100" />
         </div>
 
-        <Tile icon="chiSoNuoc" title="Khai báo chỉ số nước" sub="Gửi chỉ số đồng hồ nước định kỳ" to="/khai-bao-chi-so-nuoc" color="bg-sky-100" />
+        <Tile icon="chiSoNuoc" title="Khai báo chỉ số nước" sub="Gửi chỉ số đồng hồ nước định kỳ" to="/profile?dialog=reading" color="bg-sky-100" />
 
-        <Card to="/notifications" bg="bg-red-50">
-          <div className="flex justify-between">
-            <b className="flex items-center gap-2 text-red-600">
-              <BieuTuong ten="loa" className="h-5 w-5" />
-              Thông báo tạm ngưng cấp nước
-            </b>
-            <Chip color="bg-orange-100 text-orange-600">Mới</Chip>
+        <section className="space-y-2" aria-label="Thông báo mới nhất">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-[#124b84]">Thông báo mới nhất</h2>
+            <Btn to="/notifications" outline className="!w-auto !px-3 !py-1.5 text-xs">Xem thêm</Btn>
           </div>
-          <p className="text-sm text-slate-600 mt-1">Tạm ngưng cấp nước tại một số khu vực phường Vị Thanh để bảo trì hệ thống.</p>
-          <p className="mt-1 flex items-center gap-1 text-xs">
-            <BieuTuong ten="lich" className="h-4 w-4" />
-            Từ 22:00 20/10/2026 đến 05:00 21/10/2026
-          </p>
-        </Card>
+          {tinMoiNhat.length > 0 && (
+            <>
+              <div
+                ref={danhSachThongBaoRef}
+                onScroll={(suKien) => {
+                  const { scrollLeft, clientWidth } = suKien.currentTarget
+                  if (clientWidth > 0) datViTriThongBao(Math.round(scrollLeft / clientWidth))
+                }}
+                className="flex snap-x snap-mandatory overflow-x-auto rounded-2xl scroll-smooth"
+                role="region"
+                aria-label="Vuốt ngang để xem thông báo mới nhất"
+              >
+                {tinMoiNhat.map((tin, viTri) => (
+                  <div
+                    key={tin.id}
+                    className="w-full shrink-0 snap-start"
+                    role="group"
+                    aria-roledescription="slide"
+                    aria-label={`Thông báo ${viTri + 1} trên ${tinMoiNhat.length}`}
+                  >
+                    <Card
+                      to={`/notifications?notification=${encodeURIComponent(tin.id)}`}
+                      bg={tin.category === 'billing' ? 'bg-white' : 'bg-red-50'}
+                      className="flex min-h-28 items-start gap-3 border border-slate-100"
+                    >
+                      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${tin.category === 'billing' ? 'bg-sky-100 text-blue-600' : 'bg-orange-100 text-orange-600'}`}>
+                        <BieuTuong ten={tin.category === 'billing' ? 'hoaDon' : 'loa'} className="h-5 w-5" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-start justify-between gap-2">
+                          <span className="font-semibold text-sm text-slate-900">{tin.title}</span>
+                          {!tin.read && <Chip color="bg-orange-100 text-orange-600">Mới</Chip>}
+                        </span>
+                        <span className="mt-1 block line-clamp-2 text-sm text-slate-600">{tin.message}</span>
+                        <time dateTime={tin.createdAt} className="mt-2 block text-right text-[11px] text-slate-500">{tin.timeLabel}</time>
+                      </span>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+              {tinMoiNhat.length > 1 && (
+                <div className="flex justify-center gap-2" role="group" aria-label="Chọn thông báo">
+                  {tinMoiNhat.map((tin, viTri) => (
+                    <button
+                      key={tin.id}
+                      type="button"
+                      aria-label={`Xem thông báo ${viTri + 1}`}
+                      aria-current={viTriThongBao === viTri ? 'true' : undefined}
+                      onClick={() => chuyenDenThongBao(viTri)}
+                      className={`h-2 rounded-full transition-all ${viTriThongBao === viTri ? 'w-5 bg-blue-600' : 'w-2 bg-slate-300'}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+          {tinMoiNhat.length === 0 && <Card className="text-sm text-slate-600">Chưa có thông báo mới.</Card>}
+        </section>
 
         <div
           role="img"

@@ -1,7 +1,8 @@
 import { FormEvent, useState } from 'react'
 import Header from '../components/Header'
 import BieuTuong from '../components/BieuTuong'
-import { Btn, Card, Chip, Hero } from '../components/ui'
+import PageBanner from '../components/PageBanner'
+import { Btn, Card, Chip } from '../components/ui'
 import { danhSachHoaDon } from '../data/mock'
 
 type ThongTinHoaDon = { thang: string; soTien: string; sanLuong: number; ngay: string; ngayPhatHanh: string; daThanhToan: boolean }
@@ -84,7 +85,9 @@ export default function HoaDon() {
   return (
     <>
       <Header back="/" />
-      <Hero title="Hóa đơn" sub="Theo dõi các kỳ hóa đơn và trạng thái thanh toán" icon="hoaDon" />
+      <div className="mx-4 mb-3">
+        <PageBanner title="Hóa đơn" description="Theo dõi các kỳ hóa đơn và trạng thái thanh toán" />
+      </div>
       <div className="px-4 pb-24 space-y-3">
         <form onSubmit={xuLyTimKiem} className="space-y-3 rounded-2xl bg-sky-100 p-3">
           <div className="grid grid-cols-2 gap-2">

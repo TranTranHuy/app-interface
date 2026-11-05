@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import { Card, Row } from '../components/ui'
@@ -9,11 +9,23 @@ type ProfileDialog = 'reading' | 'password' | null
 
 export default function ThongTinTaiKhoan() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [loggedIn, setLoggedIn] = useState(true)
   const [message, setMessage] = useState('')
   const [dialog, setDialog] = useState<ProfileDialog>(null)
   const [readingImage, setReadingImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState('')
+  const [readingValue, setReadingValue] = useState(String(mockAccount.currentWaterReading + 5))
+  const [readingDate, setReadingDate] = useState('')
+  const readingConsumption = Math.max(0, Number(readingValue) - mockAccount.currentWaterReading)
+  const openReadingDialog = searchParams.get('dialog') === 'reading'
+
+  useEffect(() => {
+    if (openReadingDialog) {
+      setDialog('reading')
+      setSearchParams({}, { replace: true })
+    }
+  }, [openReadingDialog, setSearchParams])
 
   useEffect(() => {
     if (!readingImage) {
@@ -30,6 +42,21 @@ export default function ThongTinTaiKhoan() {
     event.preventDefault()
     setMessage(successMessage)
     event.currentTarget.reset()
+    setDialog(null)
+    setReadingImage(null)
+  }
+
+  function submitReading(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setMessage(`Đã ghi nhận khai báo chỉ số ${Number(readingValue).toLocaleString('vi-VN')} m³ trên dữ liệu mẫu.`)
+    event.currentTarget.reset()
+    setDialog(null)
+    setReadingImage(null)
+    setReadingValue(String(mockAccount.currentWaterReading + 5))
+    setReadingDate('')
+  }
+
+  function closeDialog() {
     setDialog(null)
     setReadingImage(null)
   }
@@ -86,7 +113,7 @@ export default function ThongTinTaiKhoan() {
       </main>
 
       {dialog && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4" role="presentation" onClick={() => { setDialog(null); setReadingImage(null) }}>
+        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4" role="presentation" onClick={closeDialog}>
           <section
             role="dialog"
             aria-modal="true"
@@ -98,19 +125,31 @@ export default function ThongTinTaiKhoan() {
               <h2 id="profile-dialog-title" className="font-semibold text-slate-900">
                 {dialog === 'reading' ? 'Khai báo chỉ số nước' : 'Đổi mật khẩu'}
               </h2>
-              <button type="button" aria-label="Đóng" onClick={() => { setDialog(null); setReadingImage(null) }} className="min-h-11 min-w-11 text-xl text-slate-600">×</button>
+              <button type="button" aria-label="Đóng" onClick={closeDialog} className="min-h-11 min-w-11 text-xl text-slate-600">×</button>
             </div>
 
             {dialog === 'reading' ? (
-              <form className="space-y-3" onSubmit={(event) => submitForm(event, 'Đã ghi nhận khai báo chỉ số trên dữ liệu mẫu.')}>
-                <p className="text-sm text-slate-600">Chỉ số hiện tại: <b>{mockAccount.currentWaterReading.toLocaleString('vi-VN')} m³</b></p>
+              <form className="space-y-3" onSubmit={submitReading}>
+                <p className="text-sm text-slate-600">Chỉ số cũ: <b>{mockAccount.currentWaterReading.toLocaleString('vi-VN')} m³</b></p>
                 <label className="block text-sm font-medium text-slate-700">
                   Chỉ số mới
-                  <input name="reading" required min="0" type="number" inputMode="numeric" className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3" placeholder="Nhập chỉ số trên đồng hồ" />
+                  <input
+                    name="reading"
+                    required
+                    min={mockAccount.currentWaterReading + 1}
+                    step="1"
+                    type="number"
+                    inputMode="numeric"
+                    value={readingValue}
+                    onChange={(event) => setReadingValue(event.target.value)}
+                    className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3"
+                    placeholder="Nhập chỉ số trên đồng hồ"
+                  />
                 </label>
+                <p className="text-xs text-slate-500">Lượng tiêu thụ dự kiến: <b>{readingConsumption} m³</b>. Chỉ số mới phải lớn hơn chỉ số cũ.</p>
                 <label className="block text-sm font-medium text-slate-700">
                   Ngày chụp/chốt chỉ số
-                  <input name="readingDate" required type="date" className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3" />
+                  <input name="readingDate" required type="date" value={readingDate} onChange={(event) => setReadingDate(event.target.value)} className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3" />
                 </label>
                 <label className="block text-sm font-medium text-slate-700">
                   Ảnh đồng hồ nước <span className="text-red-600">(bắt buộc)</span>

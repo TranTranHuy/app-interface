@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import { Card } from '../components/ui'
@@ -25,7 +26,17 @@ function NoticeIcon({ category }: { category: NotificationItem['category'] }) {
 export default function ThongBao() {
   const [category, setCategory] = useState<Category>('all')
   const [selected, setSelected] = useState<NotificationItem | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
   const visibleNotifications = notifications.filter((item) => category === 'all' || item.category === category)
+  useEffect(() => {
+    const notificationId = searchParams.get('notification')
+    if (!notificationId) return
+
+    const notification = notifications.find((item) => item.id === notificationId)
+    if (notification) setSelected(notification)
+    setSearchParams({}, { replace: true })
+  }, [searchParams, setSearchParams])
+
   const counts: Record<Category, number> = {
     all: notifications.length,
     billing: notifications.filter((item) => item.category === 'billing').length,

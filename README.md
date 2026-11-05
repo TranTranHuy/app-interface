@@ -33,7 +33,6 @@ Chỉ có giao diện và điều hướng giữa các màn hình, dữ liệu l
 - src/pages/CanhBaoBatThuong.tsx  Màn 9 – Cảnh báo tiêu thụ bất thường
 - src/pages/DangNhap.tsx          Màn đăng nhập demo
 - src/pages/HuongDanSuDung.tsx    Hướng dẫn sử dụng
-- src/pages/KhaiBaoChiSoNuoc.tsx Màn khai báo chỉ số nước (demo)
 - src/pages/SuCo.tsx              Quản lý sự cố
 - src/pages/ThongTinTaiKhoan.tsx  Thông tin tài khoản/Profile
 - src/components/                 Header, BottomNav, ui.tsx (Card, Btn, Chip, Row, Hero, Tile)
