@@ -29,7 +29,7 @@ export default function TrangChu() {
       <Header />
       <div className="flex-1 flex flex-col gap-3 px-4 pb-24 md:px-8">
         <Card
-          to="/link"
+          to="/profile"
           bg="bg-sky-100"
           className="relative flex items-center gap-3 overflow-hidden border border-white/70 bg-cover bg-center"
         >

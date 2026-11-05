@@ -6,7 +6,7 @@ const tabs: { to: string; icon: TenBieuTuong; label: string; match: string[] }[]
   { to: '/bills', icon: 'hoaDon', label: 'Hóa đơn', match: ['/bills', '/bills/detail', '/pay', '/payment/receipt'] },
   { to: '/notifications', icon: 'chuong', label: 'Thông báo', match: ['/notifications'] },
   { to: '/incidents', icon: 'suaChua', label: 'Sự cố', match: ['/incidents'] },
-  { to: '/profile', icon: 'nguoiDung', label: 'Tài khoản', match: ['/profile', '/link'] },
+  { to: '/profile', icon: 'nguoiDung', label: 'Tài khoản', match: ['/profile'] },
 ]
 
 export default function BottomNav() {
