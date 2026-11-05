@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Dancing Script';
+  src: url('/fonts/DancingScript-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Dancing Script';
+  src: url('/fonts/DancingScript-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 html { background: #e2f3ff; }
 body { margin: 0; color: #123f70; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
 

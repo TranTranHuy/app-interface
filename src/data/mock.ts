@@ -1,28 +1,43 @@
-export const usageMonths = ['11/2024', '12/2024', '01/2025', '02/2025', '03/2025', '04/2025', '05/2025', '06/2025', '07/2025', '08/2025', '09/2025', '10/2025']
-export const usageVolumes = [24, 28, 31, 28, 22, 25, 29, 33, 37, 31, 27, 24]
+export const thongTinKhachHang = {
+  hoTen: 'Nguyễn Văn An',
+  maKhachHang: 'HG0123456',
+  soDienThoai: '0912345678',
+  soDienThoaiHienThi: '0912 345 678',
+  diaChi: 'Số 123, đường Nguyễn Trãi, P. Vị Thanh, TP. Vị Thanh, Hậu Giang',
+  loaiKhachHang: 'Hộ gia đình',
+  trangThai: 'Đang hoạt động',
+}
 
-export const usageTable = [
-  { month: '10/2025', m3: 24, amount: '186.500' },
-  { month: '09/2025', m3: 26, amount: '202.000' },
-  { month: '08/2025', m3: 29, amount: '225.500' },
-  { month: '07/2025', m3: 34, amount: '264.500' },
-  { month: '06/2025', m3: 31, amount: '240.500' },
+export const thongKeTruyCap = {
+  tongLuotTruyCap: 290185,
+  soNguoiDangTrucTuyen: 32509,
+}
+
+export const cacThangSuDung = ['11/2024', '12/2024', '01/2025', '02/2025', '03/2025', '04/2025', '05/2025', '06/2025', '07/2025', '08/2025', '09/2025', '10/2025']
+export const sanLuongSuDung = [24, 28, 31, 28, 22, 25, 29, 33, 37, 31, 27, 24]
+
+export const bangSuDungNuoc = [
+  { thang: '10/2025', sanLuong: 24, soTien: '186.500' },
+  { thang: '09/2025', sanLuong: 26, soTien: '202.000' },
+  { thang: '08/2025', sanLuong: 29, soTien: '225.500' },
+  { thang: '07/2025', sanLuong: 34, soTien: '264.500' },
+  { thang: '06/2025', sanLuong: 31, soTien: '240.500' },
 ]
 
-export const paidBills = [
-  { month: '09/2026', amount: '142.300', m3: 12, date: '22/09/2026' },
-  { month: '08/2026', amount: '165.800', m3: 14, date: '20/08/2026' },
-  { month: '07/2026', amount: '158.000', m3: 14, date: '21/07/2026' },
+export const hoaDonDaThanhToan = [
+  { thang: '09/2026', soTien: '142.300', sanLuong: 12, ngay: '22/09/2026', ngayPhatHanh: '2026-09-20', chiSoCu: 1243, chiSoMoi: 1255, ngayGhi: '18/09/2026', daThanhToan: true },
+  { thang: '08/2026', soTien: '165.800', sanLuong: 14, ngay: '20/08/2026', ngayPhatHanh: '2026-08-20', chiSoCu: 1229, chiSoMoi: 1243, ngayGhi: '18/08/2026', daThanhToan: true },
+  { thang: '07/2026', soTien: '158.000', sanLuong: 14, ngay: '21/07/2026', ngayPhatHanh: '2026-07-20', chiSoCu: 1215, chiSoMoi: 1229, ngayGhi: '18/07/2026', daThanhToan: true },
 ]
 
 export const mockAccount = {
   fullName: 'Nguyễn Văn An',
   phone: '0912 345 678',
   customerCode: 'HG0123456',
-  address: 'Phường Vị Thanh, Hậu Giang',
+  address: thongTinKhachHang.diaChi,
   contractName: 'Hộ gia đình',
   contractStatus: 'Đang hoạt động',
-  currentWaterReading: 1258,
+  currentWaterReading: 1270,
 }
 
 export type NotificationItem = {
@@ -155,3 +170,17 @@ export const incidents: Incident[] = [
     status: 'Đã hoàn tất',
   },
 ]
+
+export const hoaDonChuaThanhToan = {
+  thang: '10/2026',
+  soTien: '186.500',
+  sanLuong: 15,
+  ngay: '25/10/2026',
+  ngayPhatHanh: '2026-10-20',
+  chiSoCu: 1255,
+  chiSoMoi: 1270,
+  ngayGhi: '18/10/2026',
+  daThanhToan: false,
+}
+
+export const danhSachHoaDon = [hoaDonChuaThanhToan, ...hoaDonDaThanhToan]

@@ -37,7 +37,7 @@ export default function ThongTinTaiKhoan() {
   return (
     <>
       <Header title="Thông tin tài khoản" />
-      <main className="space-y-3 px-4">
+      <main className="space-y-3 px-4 pb-24">
         <PageBanner title="Thông tin tài khoản" description="Quản lý hồ sơ, hợp đồng và tiện ích tài khoản." />
 
         {!loggedIn ? (

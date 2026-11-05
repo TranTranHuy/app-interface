@@ -68,7 +68,7 @@ export default function SuCo() {
   return (
     <>
       <Header title="Mini App" />
-      <main className="space-y-4 px-4">
+      <main className="space-y-4 px-4 pb-24">
         <PageBanner title="Quản lý sự cố" description="Gửi báo sự cố và theo dõi tiến độ xử lý." />
 
         <Card className="!p-4">

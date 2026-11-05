@@ -40,7 +40,7 @@ export default function ThongBao() {
   return (
     <>
       <Header title="Mini App" />
-      <main className="space-y-4 px-4">
+      <main className="space-y-4 px-4 pb-24">
         <PageBanner title="Thông báo" description="Cập nhật nhanh về hóa đơn, cấp nước và dịch vụ." />
 
         <div className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Phân loại thông báo">
