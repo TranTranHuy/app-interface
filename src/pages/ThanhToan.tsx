@@ -54,6 +54,8 @@ export default function ThanhToan() {
   const [trangThaiDaGiaLap, setTrangThaiDaGiaLap] = useState<{
     soHoaDon: string
     trangThai: TrangThaiThanhToanDemo
+    maGiaoDich?: string
+    thoiGianThanhToan?: string
   } | null>(null)
   const [thongBaoKiemTra, setThongBaoKiemTra] = useState('')
   const [thongBaoTienIch, setThongBaoTienIch] = useState('')
@@ -84,7 +86,8 @@ export default function ThanhToan() {
 
   const soTien = Number(hoaDon.soTien.replace(/\./g, ''))
   const soHoaDon = hoaDon.soHoaDon
-  const duongDanChiTiet = `/bills/detail?period=${encodeURIComponent(hoaDon.thang)}`
+  const kyHoaDonHienTai = hoaDon.thang
+  const duongDanChiTiet = `/bills/detail?period=${encodeURIComponent(kyHoaDonHienTai)}`
   const trangThaiDemo =
     hoaDon.daThanhToan
       ? 'success'
@@ -101,8 +104,29 @@ export default function ThanhToan() {
   const noiDungQrDemo = `DEMO - KHONG PHAI LENH THANH TOAN | Hoa don ${hoaDon.soHoaDon} | ${soTien} VND`
 
   function chonTrangThaiDemo(trangThai: TrangThaiThanhToanDemo) {
-    setTrangThaiDaGiaLap({ soHoaDon, trangThai })
+    setTrangThaiDaGiaLap({
+      soHoaDon,
+      trangThai,
+      ...(trangThai === 'success'
+        ? {
+            maGiaoDich: `DEMO-${soHoaDon}-${Date.now()}`,
+            thoiGianThanhToan: new Date().toISOString(),
+          }
+        : {}),
+    })
     setThongBaoKiemTra('')
+  }
+
+  function xemBienNhanDemo() {
+    if (trangThaiDemo !== 'success' || !trangThaiDaGiaLap?.maGiaoDich || !trangThaiDaGiaLap.thoiGianThanhToan) return
+
+    navigate(`/payment/receipt?period=${encodeURIComponent(kyHoaDonHienTai)}`, {
+      state: {
+        demo: true,
+        maGiaoDich: trangThaiDaGiaLap.maGiaoDich,
+        thoiGianThanhToan: trangThaiDaGiaLap.thoiGianThanhToan,
+      },
+    })
   }
 
   function kiemTraLaiDemo() {
@@ -267,6 +291,16 @@ export default function ThanhToan() {
             <p role="status" className="mt-2 text-center text-xs text-slate-600">
               {thongBaoKiemTra}
             </p>
+          )}
+          {!hoaDon.daThanhToan && trangThaiDemo === 'success' && trangThaiDaGiaLap?.maGiaoDich && (
+            <button
+              type="button"
+              onClick={xemBienNhanDemo}
+              className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#087fc4] px-4 text-sm font-semibold text-white"
+            >
+              <BieuTuong ten="hoaDon" className="h-5 w-5" />
+              Xem biên nhận (demo)
+            </button>
           )}
           {!hoaDon.daThanhToan && <details className="mt-3 border-t border-slate-100 pt-3">
             <summary className="cursor-pointer text-xs font-semibold text-slate-600">

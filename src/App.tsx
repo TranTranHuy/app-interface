@@ -5,6 +5,7 @@ import LienKetKhachHang from './pages/LienKetKhachHang'
 import HoaDon from './pages/HoaDon'
 import ChiTietHoaDon from './pages/ChiTietHoaDon'
 import ThanhToan from './pages/ThanhToan'
+import BienNhanThanhToan from './pages/BienNhanThanhToan'
 import ThongBao from './pages/ThongBao'
 import SuCo from './pages/SuCo'
 import ThongTinTaiKhoan from './pages/ThongTinTaiKhoan'
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/bills" element={<HoaDon />} />
           <Route path="/bills/detail" element={<ChiTietHoaDon />} />
           <Route path="/pay" element={<ThanhToan />} />
+          <Route path="/payment/receipt" element={<BienNhanThanhToan />} />
           <Route path="/notifications" element={<ThongBao />} />
           <Route path="/incidents" element={<SuCo />} />
           <Route path="/profile" element={<ThongTinTaiKhoan />} />
