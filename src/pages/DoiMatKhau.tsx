@@ -69,9 +69,9 @@ export default function DoiMatKhau() {
               <BieuTuong ten="xacNhan" className="h-9 w-9" strokeWidth={2.2} />
             </span>
             <div>
-              <h1 role="status" aria-live="polite" className="text-xl font-bold text-emerald-800">Đổi mật khẩu thành công</h1>
+              <h1 role="status" aria-live="polite" className="text-xl font-bold text-emerald-800">Đã xác nhận thông tin</h1>
               <p className="mt-2 text-sm leading-5 text-slate-600">
-                Mật khẩu mới đã được xác nhận trong bản demo.
+                Mật khẩu chưa được cập nhật. Vui lòng thử lại sau khi chức năng tài khoản sẵn sàng.
               </p>
             </div>
             <Btn onClick={() => navigate('/profile')}>Quay lại tài khoản</Btn>
@@ -112,7 +112,7 @@ export default function DoiMatKhau() {
               {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
               <Btn type="submit">Đổi mật khẩu</Btn>
               <p className="text-center text-xs text-slate-500">
-                Bản demo: thao tác chưa kết nối hệ thống tài khoản.
+                Chức năng cập nhật mật khẩu hiện chưa sẵn sàng.
               </p>
             </form>
           </Card>

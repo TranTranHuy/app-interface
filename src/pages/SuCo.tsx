@@ -97,7 +97,7 @@ export default function SuCo() {
     const description = String(formData.get('description') ?? '').trim()
     const now = new Date()
     const newIncident: Incident = {
-      id: `SC-DEMO-${Date.now()}`,
+      id: `SC-${Date.now()}`,
       type: draftType,
       reason: draftReason,
       cause: draftCause,
@@ -244,6 +244,7 @@ export default function SuCo() {
                   <time className="self-center" dateTime={item.date}>{new Date(`${item.date}T00:00:00`).toLocaleDateString('vi-VN')}</time>
                 </div>
                 <p className="mt-2 text-[11px] text-slate-400">{item.id} · {item.reason} · {item.cause}</p>
+                <span className="mt-2 block text-right text-xs font-semibold text-[#087fc4]">Xem chi tiết ›</span>
               </Card>
             </button>
           ))}

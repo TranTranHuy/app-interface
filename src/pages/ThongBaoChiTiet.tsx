@@ -66,7 +66,7 @@ export default function ThongBaoChiTiet() {
                 onClick={() => navigate(relatedPath)}
                 className="min-h-11 w-full rounded-full bg-[#087fc4] px-4 text-sm font-semibold text-white"
               >
-                Xem hóa đơn liên quan
+                Xem hóa đơn ngay
               </button>
             )}
           </>

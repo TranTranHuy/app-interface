@@ -26,14 +26,13 @@ export default function Header({ back, title }: { back?: string; title?: string 
       </div>
       <button
         type="button"
-        aria-label={soThongBaoChuaDoc ? `Mở thông báo, ${soThongBaoChuaDoc} chưa đọc` : 'Mở thông báo'}
+        aria-label={soThongBaoChuaDoc ? 'Mở thông báo, có thông báo mới' : 'Mở thông báo'}
         onClick={() => chuyenTrang('/notifications')}
         className="relative grid h-10 w-10 place-items-center rounded-full bg-white/70 text-blue-700"
       >
         <BieuTuong ten="chuong" className="h-5 w-5" />
         {soThongBaoChuaDoc > 0 && (
-          <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full border-2 border-sky-50 bg-red-500 px-1 text-[10px] font-bold leading-none text-white">
-            {soThongBaoChuaDoc > 9 ? '9+' : soThongBaoChuaDoc}
+          <span aria-hidden="true" className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-sky-50 bg-red-500">
           </span>
         )}
       </button>

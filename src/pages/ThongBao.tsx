@@ -1,10 +1,9 @@
-import { useState, useSyncExternalStore } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import { Card } from '../components/ui'
 import { notifications, type NotificationCategory, type NotificationItem } from '../data/mock'
-import { dangKyThayDoiThongBao, danhSachThongBaoDaDoc, layThongBaoDaDoc } from '../data/trangThaiThongBao'
 
 type Filter = 'all' | NotificationCategory
 
@@ -38,8 +37,6 @@ function NoticeIcon({ category }: { category: NotificationCategory }) {
 export default function ThongBao() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState<Filter>('all')
-  const readState = useSyncExternalStore(dangKyThayDoiThongBao, layThongBaoDaDoc, () => '')
-  const readIds = danhSachThongBaoDaDoc(readState)
   const items = notifications
   const filters: [Filter, string][] = [
     ['all', 'Tất cả'],
@@ -87,13 +84,15 @@ export default function ThongBao() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <p className="font-semibold text-slate-900">{item.title}</p>
-                      {!item.read && !readIds.has(item.id) && <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-full bg-red-500" aria-label="Chưa đọc" />}
                     </div>
                     <p className="mt-1 line-clamp-2 text-sm text-slate-600">{item.message}</p>
                     <div className="mt-2 flex items-center justify-between gap-2">
                       <span className="text-xs font-medium text-[#087fc4]">{categoryLabels[item.category]}</span>
                       <time className="text-[11px] text-slate-500" dateTime={item.createdAt}>{item.timeLabel}</time>
                     </div>
+                    <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#087fc4]">
+                      Xem chi tiết thông báo <span aria-hidden="true">›</span>
+                    </span>
                   </div>
                 </div>
               </Card>

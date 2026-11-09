@@ -23,7 +23,7 @@ export function Btn({ children, className = '', to, onClick, outline, disabled, 
   }
   const style = outline ? 'bg-white text-[#087fc4] border border-[#168fe0]' : 'bg-gradient-to-r from-[#087fc4] to-[#19a8f5] text-white shadow-sm shadow-sky-200'
   return (
-    <button type={type} onClick={click} disabled={disabled} className={`flex items-center justify-center gap-2 w-full py-3 rounded-full font-semibold ${style} ${disabled ? 'opacity-40' : ''} ${className}`}>
+    <button type={type} onClick={click} disabled={disabled} className={`flex items-center justify-center gap-2 w-full py-3 rounded-full text-base font-semibold ${style} ${disabled ? 'opacity-40' : ''} ${className}`}>
       {children}
     </button>
   )
@@ -35,7 +35,7 @@ export function Chip({ children, color }: { children: ReactNode; color: string }
 
 export function Row({ a, b, className = '' }: { a: string; b: string; className?: string }) {
   return (
-    <div className="flex justify-between gap-3 py-1.5 text-sm">
+    <div className="flex justify-between gap-3 py-2 text-base">
       <span className="text-slate-600">{a}</span>
       <b className={`text-right ${className}`}>{b}</b>
     </div>
@@ -62,8 +62,8 @@ export function Tile({ icon, title, sub, to, color }: { icon: TenBieuTuong; titl
         <BieuTuong ten={icon} className="h-5 w-5 text-blue-700" />
       </span>
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-sm">{title}</div>
-        <div className="text-xs text-slate-500">{sub}</div>
+        <div className="text-base font-bold">{title}</div>
+        <div className="text-sm text-slate-500">{sub}</div>
       </div>
       <BieuTuong ten="muiTenTrai" className="h-4 w-4 rotate-180 text-slate-400" />
     </Card>

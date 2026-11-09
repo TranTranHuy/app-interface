@@ -1,13 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
+import BieuTuong from '../components/BieuTuong'
 import PageBanner from '../components/PageBanner'
 import SuccessToast from '../components/SuccessToast'
 import { Card, Row } from '../components/ui'
 import { mockAccount } from '../data/mock'
 import { khoaLuuPhienDangNhap } from '../xacThuc'
 
-type ProfileDialog = 'reading' | 'contract' | 'referral' | 'logout' | null
+type ProfileDialog = 'reading' | 'contract' | 'referral' | 'phone' | 'logout' | null
 type WatermarkedImage = { file: File; capturedAt: string; coordinates: string }
 const referralCodeStorageKey = 'employee-referral-code'
 
@@ -66,6 +67,7 @@ export default function ThongTinTaiKhoan() {
   const [previousReading, setPreviousReading] = useState(mockAccount.previousWaterReading)
   const [newReading, setNewReading] = useState('')
   const [referralCode, setReferralCode] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState(mockAccount.phone)
 
   useEffect(() => {
     if (searchParams.get('dialog') !== 'reading') return
@@ -172,10 +174,10 @@ export default function ThongTinTaiKhoan() {
       <Header title="Thông tin tài khoản" />
       <SuccessToast message={message} onClose={() => setMessage('')} />
       <main className="space-y-3 px-4 pb-24">
-        <PageBanner title="Thông tin tài khoản" description="Quản lý hồ sơ, hợp đồng và tiện ích tài khoản." />
+        <PageBanner title="Thông tin tài khoản" description="Hồ sơ cá nhân, hợp đồng và tiện ích tài khoản." />
 
         <Card className="!p-4">
-          <h2 className="mb-2 font-semibold text-slate-900">Hồ sơ cá nhân</h2>
+          <h2 className="mb-2 text-lg font-bold text-slate-900">Hồ sơ cá nhân</h2>
           <Row a="Họ và tên" b={mockAccount.fullName} />
           <Row a="Mã khách hàng (IDKH)" b={mockAccount.customerCode} />
           <Row a="Tên đăng nhập" b={mockAccount.username} />
@@ -187,35 +189,64 @@ export default function ThongTinTaiKhoan() {
           <Row a="Email" b={mockAccount.email} />
         </Card>
 
+        <Card bg="bg-sky-50" className="!border !border-sky-200 !p-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sky-100 text-[#087fc4]">
+              <BieuTuong ten="dienThoai" className="h-5 w-5" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="font-bold text-slate-900">Liên kết số điện thoại</h2>
+              <p className="mt-1 text-sm text-slate-600">{mockAccount.phone}</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => openDialog('phone')}
+            className="mt-3 min-h-11 w-full rounded-full bg-gradient-to-r from-[#087fc4] to-[#19a8f5] px-4 font-semibold text-white"
+          >
+            Liên kết / cập nhật số điện thoại
+          </button>
+        </Card>
+
         <Card className="space-y-3 !p-4">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="font-semibold text-slate-900">Hợp đồng đang liên kết</h2>
-            <span className="text-xs font-medium text-emerald-700">{mockAccount.contractStatus}</span>
+            <h2 className="text-lg font-bold text-slate-900">Hợp đồng đang liên kết</h2>
+            <span className="text-sm font-semibold text-emerald-700">{mockAccount.contractStatus}</span>
           </div>
           <Row a="Mã khách hàng" b={mockAccount.customerCode} />
           <Row a="Tên hợp đồng" b={mockAccount.contractName} />
-          <button type="button" onClick={() => openDialog('contract')} className="min-h-11 w-full rounded-lg border border-slate-200 px-3 text-left font-medium text-[#087fc4]">
+          <button type="button" onClick={() => openDialog('contract')} className="min-h-11 w-full rounded-lg border border-[#168fe0] bg-sky-50 px-3 text-left font-semibold text-[#087fc4]">
             Xem chi tiết hợp đồng và pháp lý
           </button>
         </Card>
 
-        <Card className="!p-4">
-          <h2 className="mb-1 font-semibold text-slate-900">Khai báo chỉ số nước</h2>
-          <p className="text-sm text-slate-600">Kỳ hiện tại: {mockAccount.currentPeriod} · Chỉ số kỳ trước: {previousReading.toLocaleString('vi-VN')} m³</p>
-          <button type="button" onClick={() => openDialog('reading')} className="mt-3 min-h-11 w-full rounded-lg bg-[#087fc4] px-3 font-semibold text-white">
+        <Card bg="bg-blue-50" className="!border !border-blue-100 !p-4">
+          <h2 className="mb-1 text-lg font-bold text-slate-900">Khai báo chỉ số nước</h2>
+          <p className="text-base text-slate-600">Kỳ hiện tại: {mockAccount.currentPeriod}</p>
+          <p className="text-base text-slate-600">Chỉ số kỳ trước: <b>{previousReading.toLocaleString('vi-VN')} m³</b></p>
+          <button type="button" onClick={() => openDialog('reading')} className="mt-3 flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#087fc4] to-[#19a8f5] px-3 text-base font-bold text-white">
+            <BieuTuong ten="chiSoNuoc" className="h-5 w-5" />
             Khai báo chỉ số
           </button>
         </Card>
 
         <Card className="!p-4">
-          <h2 className="mb-2 font-semibold text-slate-900">Tiện ích tài khoản</h2>
+          <h2 className="mb-2 text-lg font-bold text-slate-900">Tiện ích tài khoản</h2>
           <div className="space-y-2">
-            <button type="button" onClick={() => navigate('/profile/change-password')} className="min-h-11 w-full rounded-lg border border-slate-200 px-3 text-left font-medium text-slate-800">Đổi mật khẩu</button>
-            <button type="button" onClick={() => openDialog('referral')} className="min-h-11 w-full rounded-lg border border-slate-200 px-3 text-left font-medium text-slate-800">Mã giới thiệu nhân viên</button>
+            <button type="button" onClick={() => navigate('/profile/change-password')} className="flex min-h-12 w-full items-center gap-3 rounded-xl bg-sky-50 px-3 text-left text-base font-bold text-[#087fc4]">
+              <BieuTuong ten="khoa" className="h-5 w-5" />
+              Đổi mật khẩu
+              <BieuTuong ten="muiTenTrai" className="ml-auto h-5 w-5 rotate-180" />
+            </button>
+            <button type="button" onClick={() => openDialog('referral')} className="flex min-h-12 w-full items-center gap-3 rounded-xl bg-indigo-50 px-3 text-left text-base font-bold text-indigo-800">
+              <BieuTuong ten="lienKet" className="h-5 w-5" />
+              Mã giới thiệu nhân viên
+              <BieuTuong ten="muiTenTrai" className="ml-auto h-5 w-5 rotate-180" />
+            </button>
           </div>
         </Card>
 
-        <button type="button" onClick={() => openDialog('logout')} className="min-h-11 w-full rounded-full border border-slate-300 bg-white px-4 font-semibold text-slate-700">
+        <button type="button" onClick={() => openDialog('logout')} className="min-h-12 w-full rounded-full border border-red-200 bg-red-50 px-4 text-base font-bold text-red-700">
           Đăng xuất
         </button>
       </main>
@@ -234,7 +265,8 @@ export default function ThongTinTaiKhoan() {
                 {dialog === 'reading' ? 'Khai báo chỉ số nước'
                   : dialog === 'contract' ? 'Chi tiết hợp đồng'
                     : dialog === 'referral' ? 'Mã giới thiệu nhân viên'
-                      : 'Xác nhận đăng xuất'}
+                      : dialog === 'phone' ? 'Liên kết số điện thoại'
+                        : 'Xác nhận đăng xuất'}
               </h2>
               <button type="button" aria-label="Đóng" onClick={closeDialog} className="min-h-11 min-w-11 text-xl text-slate-600">×</button>
             </div>
@@ -268,6 +300,36 @@ export default function ThongTinTaiKhoan() {
                 <Row a="Địa chỉ dịch vụ" b={mockAccount.contractDetails.serviceAddress} />
                 <Row a="Đơn vị cấp nước" b={mockAccount.contractDetails.provider} />
                 <Row a="Trạng thái" b={mockAccount.contractStatus} />
+              </div>
+            ) : dialog === 'phone' ? (
+              <div className="space-y-3">
+                <p className="text-sm leading-5 text-slate-600">Nhập số điện thoại và mã xác thực để liên kết với tài khoản.</p>
+                <label className="block text-sm font-medium text-slate-700">
+                  Số điện thoại
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={phoneNumber}
+                    onChange={(event) => setPhoneNumber(event.target.value)}
+                    className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-base"
+                    placeholder="Nhập số điện thoại"
+                  />
+                </label>
+                <label className="block text-sm font-medium text-slate-700">
+                  Mã xác thực
+                  <input
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    maxLength={6}
+                    className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3 text-base"
+                    placeholder="Nhập mã OTP"
+                  />
+                </label>
+                <button type="button" disabled className="min-h-11 w-full rounded-full border border-slate-200 bg-slate-100 px-4 font-semibold text-slate-500">
+                  Gửi mã xác thực
+                </button>
+                <p className="text-xs text-slate-500">Giao diện xem trước; chưa gửi SMS hoặc lưu thay đổi.</p>
               </div>
             ) : dialog === 'referral' ? (
               <form className="space-y-3" onSubmit={submitReferralCode}>
