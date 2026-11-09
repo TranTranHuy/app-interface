@@ -82,7 +82,7 @@ export default function ThanhToan() {
     return (
       <>
         <Header back="/bills" />
-        <main className="space-y-3 px-4 pb-24">
+        <main className="invoice-readable space-y-3 px-4 pb-24">
           <Card bg="bg-amber-50">
             <h1 className="font-semibold text-amber-900">Không tìm thấy hóa đơn</h1>
             <p className="mt-1 text-sm text-amber-800">Vui lòng quay lại danh sách và chọn hóa đơn cần thanh toán.</p>
@@ -174,7 +174,7 @@ export default function ThanhToan() {
   return (
     <>
       <Header back={duongDanChiTiet} title="Thanh toán hóa đơn" />
-      <main className="space-y-3 px-4 pb-24">
+      <main className="invoice-readable space-y-3 px-4 pb-24">
         <Card className="overflow-hidden !p-0">
           <div className="bg-gradient-to-r from-[#087fc4] to-[#19a8f5] px-4 py-3 text-white">
             <div className="flex items-center gap-2 text-sm font-semibold">

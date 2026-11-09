@@ -33,6 +33,13 @@ button, input, select, textarea { font: inherit; }
 .readable-page input,
 .readable-page select,
 .readable-page textarea { font-size: 1rem; }
+.invoice-readable :is(h1, h2, h3) { font-size: 1.25rem; font-weight: 700; }
+.invoice-readable :is(p, label, time, td, th) { font-size: 1rem; font-weight: 500; line-height: 1.55; }
+.invoice-readable p[class*="text-3xl"] { font-size: 1.875rem; font-weight: 700; }
+.invoice-readable div[class*="text-"] { font-size: 1rem; font-weight: 500; }
+.invoice-readable span[class*="text-"] { font-size: 0.875rem; font-weight: 600; }
+.invoice-readable button:not([aria-label]) { font-size: 1rem; font-weight: 600; }
+.invoice-readable :is(input, select, textarea) { font-size: 1rem; }
 button { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible {
   outline: 2px solid #168fe0;
@@ -57,11 +64,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 
 @keyframes invoice-chart-bar-enter {
   from {
-    opacity: 0.4;
     transform: scaleY(0);
   }
   to {
-    opacity: 1;
     transform: scaleY(1);
   }
 }

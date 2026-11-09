@@ -42,7 +42,7 @@ export default function BienNhanThanhToan() {
     return (
       <>
         <Header back={hoaDon ? `/pay?period=${encodeURIComponent(hoaDon.thang)}` : '/bills'} title="Biên nhận thanh toán" />
-        <main className="space-y-3 px-4 pb-24">
+        <main className="invoice-readable space-y-3 px-4 pb-24">
           <Card bg="bg-amber-50">
             <h1 className="font-semibold text-amber-900">Không có biên nhận hợp lệ</h1>
             <p className="mt-1 text-sm leading-5 text-amber-800">
@@ -67,7 +67,7 @@ export default function BienNhanThanhToan() {
   return (
     <>
       <Header back={`/pay?period=${encodeURIComponent(hoaDon.thang)}`} title="Biên nhận thanh toán" />
-      <main className="space-y-3 px-4 pb-24">
+      <main className="invoice-readable space-y-3 px-4 pb-24">
         <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-600 px-5 py-7 text-center text-white shadow-lg shadow-emerald-100">
           <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-white/20">
             <BieuTuong ten="xacNhan" className="h-9 w-9" strokeWidth={2.2} />

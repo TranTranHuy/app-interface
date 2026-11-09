@@ -284,7 +284,7 @@ export default function HoaDon() {
       <div className="mx-4 mb-3">
         <PageBanner title="Hóa đơn" description="Theo dõi các kỳ hóa đơn và trạng thái thanh toán" />
       </div>
-      <div className="px-4 pb-24 space-y-3">
+      <div className="invoice-readable px-4 pb-24 space-y-3">
         <form onSubmit={xuLyTimKiem} className="space-y-3 rounded-2xl bg-sky-100 p-3">
           <div className="grid grid-cols-2 gap-2">
             <label className="text-xs font-semibold text-slate-600">
@@ -420,7 +420,7 @@ export default function HoaDon() {
                         <div
                           key={moc}
                           aria-hidden="true"
-                          className="absolute inset-x-0 border-t border-dashed border-slate-200"
+                          className="absolute inset-x-0 border-t border-dashed border-slate-300"
                           style={{ bottom: `${moc}%` }}
                         />
                       ))}
@@ -432,7 +432,7 @@ export default function HoaDon() {
                               role="img"
                               aria-label={`${hoaDon.thang}: ${hoaDon.sanLuong} mét khối`}
                               title={`${hoaDon.thang}: ${hoaDon.sanLuong} m³`}
-                              className="invoice-chart-bar w-full max-w-10 rounded-t-md bg-gradient-to-t from-[#087fc4] to-[#48baf3] transition-[height] duration-500 ease-out motion-reduce:transition-none"
+                              className="invoice-chart-bar w-full max-w-10 rounded-t-md bg-[#087fc4] transition-[height] duration-500 ease-out motion-reduce:transition-none"
                               style={{
                                 height: `${Math.max((hoaDon.sanLuong / mucTieuThuCaoNhat) * 70, 8)}%`,
                                 animationDelay: `${viTri * 75}ms`,

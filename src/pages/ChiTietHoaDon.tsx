@@ -38,8 +38,8 @@ export default function ChiTietHoaDon() {
   return (
     <>
       <Header back="/bills" />
-      <h1 className="text-center font-bold text-lg -mt-1 mb-2">Chi tiết hóa đơn</h1>
-      <div className="px-4 pb-24 space-y-3">
+      <h1 className="invoice-readable text-center font-bold text-xl -mt-1 mb-2">Chi tiết hóa đơn</h1>
+      <div className="invoice-readable px-4 pb-24 space-y-3">
         <Card bg={daThanhToan ? 'bg-emerald-50' : 'bg-white'} className="flex justify-between">
           <div>
             <b className="flex items-center gap-2"><BieuTuong ten="hoaDon" className="h-6 w-6 text-blue-600" />Hóa đơn tiền nước</b>
