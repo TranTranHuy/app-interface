@@ -7,7 +7,6 @@ import SuccessToast from '../components/SuccessToast'
 import { Card, Row } from '../components/ui'
 import { mockAccount } from '../data/mock'
 import { khoaLuuPhienDangNhap } from '../xacThuc'
-import { xoaThanhToanDemo } from '../data/trangThaiThanhToanDemo'
 
 type ProfileDialog = 'reading' | 'contract' | 'referral' | 'phone' | 'logout' | null
 type WatermarkedImage = { file: File; capturedAt: string; coordinates: string }
@@ -164,7 +163,6 @@ export default function ThongTinTaiKhoan() {
   }
 
   function logout() {
-    xoaThanhToanDemo()
     localStorage.removeItem(khoaLuuPhienDangNhap)
     sessionStorage.removeItem(khoaLuuPhienDangNhap)
     closeDialog()
