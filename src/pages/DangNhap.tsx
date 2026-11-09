@@ -82,9 +82,6 @@ export default function DangNhap() {
         </label>
         {loiDangNhap && <p role="alert" className="text-sm text-red-600">{loiDangNhap}</p>}
         <Btn className="!mt-5" type="submit">Đăng nhập</Btn>
-        <p className="text-center text-xs text-slate-500">
-          Tài khoản demo: <b>{taiKhoanDemo.soDienThoai.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3')}</b> hoặc <b>{taiKhoanDemo.maKhachHang}</b> · Mật khẩu: <b>{taiKhoanDemo.matKhau}</b>
-        </p>
       </form>
 
       <Btn to="/guide" outline className="mt-4">
@@ -98,9 +95,6 @@ export default function DangNhap() {
         <BieuTuong ten="dienThoai" className="h-5 w-5 text-blue-600" />
         Hotline CSKH: 02933 572 019
       </a>
-      <p className="mt-4 text-center text-xs text-slate-500">
-        Bản demo giao diện; đăng nhập chưa kết nối API Wasspro.
-      </p>
     </main>
   )
 }

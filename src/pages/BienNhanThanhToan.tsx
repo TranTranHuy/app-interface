@@ -1,26 +1,10 @@
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { useSyncExternalStore } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import BieuTuong from '../components/BieuTuong'
 import { Card, Row } from '../components/ui'
 import { danhSachHoaDon, thongTinKhachHang } from '../data/mock'
-
-type DuLieuBienNhanDemo = {
-  demo: true
-  maGiaoDich: string
-  thoiGianThanhToan: string
-}
-
-function laDuLieuBienNhanDemo(value: unknown): value is DuLieuBienNhanDemo {
-  if (typeof value !== 'object' || value === null) return false
-
-  const state = value as Record<string, unknown>
-  return (
-    state.demo === true &&
-    typeof state.maGiaoDich === 'string' &&
-    typeof state.thoiGianThanhToan === 'string' &&
-    !Number.isNaN(Date.parse(state.thoiGianThanhToan))
-  )
-}
+import { dangKyThayDoiThanhToanDemo, layDanhSachThanhToanDemo } from '../data/trangThaiThanhToanDemo'
 
 function formatCurrency(amount: number): string {
   return `${amount.toLocaleString('vi-VN')}đ`
@@ -35,11 +19,24 @@ function formatDateTime(value: string): string {
 
 export default function BienNhanThanhToan() {
   const navigate = useNavigate()
-  const location = useLocation()
   const [searchParams] = useSearchParams()
+  const thanhToanDemo = useSyncExternalStore(
+    dangKyThayDoiThanhToanDemo,
+    layDanhSachThanhToanDemo,
+    layDanhSachThanhToanDemo,
+  )
   const kyHoaDon = searchParams.get('period')
   const hoaDon = danhSachHoaDon.find((item) => item.thang === kyHoaDon)
-  const duLieuBienNhan = laDuLieuBienNhanDemo(location.state) ? location.state : null
+  const giaoDichDemo = hoaDon ? thanhToanDemo[hoaDon.soHoaDon] : undefined
+  const duLieuBienNhan =
+    giaoDichDemo?.trangThai === 'success' &&
+    typeof giaoDichDemo.maGiaoDich === 'string' &&
+    typeof giaoDichDemo.thoiGianThanhToan === 'string'
+      ? {
+          maGiaoDich: giaoDichDemo.maGiaoDich,
+          thoiGianThanhToan: giaoDichDemo.thoiGianThanhToan,
+        }
+      : null
 
   if (!hoaDon || !duLieuBienNhan) {
     return (
@@ -49,7 +46,7 @@ export default function BienNhanThanhToan() {
           <Card bg="bg-amber-50">
             <h1 className="font-semibold text-amber-900">Không có biên nhận hợp lệ</h1>
             <p className="mt-1 text-sm leading-5 text-amber-800">
-              Biên nhận này chỉ được tạo sau khi chọn kết quả thành công trong luồng mô phỏng.
+              Biên nhận chỉ khả dụng sau khi mô phỏng thành công trong phiên hiện tại. Tải lại ứng dụng hoặc đăng xuất sẽ xóa dữ liệu demo.
             </p>
           </Card>
           <button
@@ -107,7 +104,7 @@ export default function BienNhanThanhToan() {
         <Card bg="bg-amber-50" className="flex items-start gap-2 !p-3">
           <BieuTuong ten="canhBao" className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
           <p className="text-xs leading-5 text-amber-900">
-            Đây là biên nhận mẫu để xem trước giao diện. Không có giao dịch ngân hàng và trạng thái hóa đơn chưa được cập nhật.
+            Đây là biên nhận mẫu. Không có giao dịch ngân hàng; trạng thái chỉ được cập nhật trong bộ nhớ của phiên demo và sẽ mất khi tải lại hoặc đăng xuất.
           </p>
         </Card>
 

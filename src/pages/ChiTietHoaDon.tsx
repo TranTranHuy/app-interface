@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useState, useSyncExternalStore } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import BieuTuong, { type TenBieuTuong } from '../components/BieuTuong'
 import { Btn, Card, Chip, Row } from '../components/ui'
 import { danhSachHoaDon, thongTinKhachHang } from '../data/mock'
+import { dangKyThayDoiThanhToanDemo, layDanhSachThanhToanDemo } from '../data/trangThaiThanhToanDemo'
 
 const cacPhuongThucThanhToan: { icon: TenBieuTuong; name: string }[] = [
   { icon: 'hoaDon', name: 'QR/VietQR' },
@@ -13,10 +14,19 @@ const cacPhuongThucThanhToan: { icon: TenBieuTuong; name: string }[] = [
 ]
 
 export default function ChiTietHoaDon() {
+  const navigate = useNavigate()
   const [phuongThucDangChon, datPhuongThucDangChon] = useState(0)
   const [thamSoTimKiem] = useSearchParams()
+  const thanhToanDemo = useSyncExternalStore(
+    dangKyThayDoiThanhToanDemo,
+    layDanhSachThanhToanDemo,
+    layDanhSachThanhToanDemo,
+  )
   const kyHoaDon = thamSoTimKiem.get('period')
   const hoaDon = danhSachHoaDon.find((muc) => muc.thang === kyHoaDon) ?? danhSachHoaDon[0]
+  const giaoDichDemo = thanhToanDemo[hoaDon.soHoaDon]
+  const daThanhToanDemo = !hoaDon.daThanhToan && giaoDichDemo?.trangThai === 'success'
+  const daThanhToan = hoaDon.daThanhToan || daThanhToanDemo
   const ngayPhatHanh = hoaDon.ngayPhatHanh.split('-').reverse().join('/')
   const soTien = Number(hoaDon.soTien.replace(/\./g, ''))
   const tienNuoc = Math.round(soTien / 1.17)
@@ -24,27 +34,28 @@ export default function ChiTietHoaDon() {
   const phiDichVu = Math.round(tienNuoc * 0.02)
   const thueGiatriGiaTang = soTien - tienNuoc - phiMoiTruong - phiDichVu
   const duongDanThanhToan = `/pay?period=${encodeURIComponent(hoaDon.thang)}`
+  
   return (
     <>
       <Header back="/bills" />
       <h1 className="text-center font-bold text-lg -mt-1 mb-2">Chi tiết hóa đơn</h1>
       <div className="px-4 pb-24 space-y-3">
-        <Card bg={hoaDon.daThanhToan ? 'bg-emerald-50' : 'bg-white'} className="flex justify-between">
+        <Card bg={daThanhToan ? 'bg-emerald-50' : 'bg-white'} className="flex justify-between">
           <div>
             <b className="flex items-center gap-2"><BieuTuong ten="hoaDon" className="h-6 w-6 text-blue-600" />Hóa đơn tiền nước</b>
             <div className="text-sm">Kỳ hóa đơn: <b>{hoaDon.thang}</b></div>
             <div className="text-xs">Ngày phát hành: {ngayPhatHanh}</div>
-            <div className="text-xs">{hoaDon.daThanhToan ? 'Ngày thanh toán' : 'Hạn thanh toán'}: <b className={hoaDon.daThanhToan ? 'text-emerald-700' : 'text-red-600'}>{hoaDon.ngay}</b></div>
+            <div className="text-xs">{daThanhToanDemo ? 'Ngày mô phỏng' : daThanhToan ? 'Ngày thanh toán' : 'Hạn thanh toán'}: <b className={daThanhToan ? 'text-emerald-700' : 'text-red-600'}>{daThanhToanDemo && giaoDichDemo?.thoiGianThanhToan ? new Intl.DateTimeFormat('vi-VN').format(new Date(giaoDichDemo.thoiGianThanhToan)) : hoaDon.ngay}</b></div>
           </div>
-          <div><Chip color={hoaDon.daThanhToan ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-600'}>{hoaDon.daThanhToan ? 'Đã thanh toán' : 'Chưa thanh toán'}</Chip></div>
+          <div><Chip color={daThanhToan ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-600'}>{daThanhToanDemo ? 'Đã thanh toán (demo)' : daThanhToan ? 'Đã thanh toán' : 'Chưa thanh toán'}</Chip></div>
         </Card>
 
-        {hoaDon.daThanhToan && (
+        {daThanhToan && (
           <Card bg="bg-emerald-100" className="flex items-center gap-3">
             <BieuTuong ten="xacNhan" className="h-8 w-8 shrink-0 text-emerald-700" />
             <div>
-              <b className="text-emerald-800">Hóa đơn đã được thanh toán</b>
-              <p className="text-sm text-emerald-700">Thanh toán ngày {hoaDon.ngay}</p>
+              <b className="text-emerald-800">{daThanhToanDemo ? 'Thanh toán thành công (demo)' : 'Hóa đơn đã được thanh toán'}</b>
+              <p className="text-sm text-emerald-700">{daThanhToanDemo ? 'Trạng thái mô phỏng, chưa xác nhận giao dịch thật.' : `Thanh toán ngày ${hoaDon.ngay}`}</p>
             </div>
           </Card>
         )}
@@ -111,13 +122,22 @@ export default function ChiTietHoaDon() {
           <Row a="Phí bảo vệ môi trường (5%)" b={`${phiMoiTruong.toLocaleString('vi-VN')}đ`} />
           <Row a="Phí dịch vụ (2%)" b={`${phiDichVu.toLocaleString('vi-VN')}đ`} />
           <Row a="Thuế GTGT" b={`${thueGiatriGiaTang.toLocaleString('vi-VN')}đ`} />
-          <div className={`flex justify-between items-center rounded-lg p-2 mt-1 ${hoaDon.daThanhToan ? 'bg-emerald-50' : 'bg-blue-50'}`}>
+          <div className={`flex justify-between items-center rounded-lg p-2 mt-1 ${daThanhToan ? 'bg-emerald-50' : 'bg-blue-50'}`}>
             <b>Tổng cộng</b>
             <b className="text-xl">{hoaDon.soTien}đ</b>
           </div>
         </Card>
 
-        {!hoaDon.daThanhToan && (
+        {daThanhToanDemo ? (
+          <button
+            type="button"
+            onClick={() => navigate(`/payment/receipt?period=${encodeURIComponent(hoaDon.thang)}`)}
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#087fc4] px-4 text-sm font-semibold text-white"
+          >
+            <BieuTuong ten="hoaDon" className="h-5 w-5" />
+            Xem biên nhận demo
+          </button>
+        ) : !daThanhToan && (
           <>
             <Card>
               <b className="flex items-center gap-2"><BieuTuong ten="thanhToan" className="h-5 w-5 text-blue-600" />Chọn phương thức thanh toán</b>

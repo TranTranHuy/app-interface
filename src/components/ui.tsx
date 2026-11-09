@@ -29,8 +29,8 @@ export function Btn({ children, className = '', to, onClick, outline, disabled, 
   )
 }
 
-export function Chip({ children, color }: { children: ReactNode; color: string }) {
-  return <span className={`px-2.5 py-0.5 rounded-full text-sm font-bold whitespace-nowrap ${color}`}>{children}</span>
+export function Chip({ children, color, className = '' }: { children: ReactNode; color: string; className?: string }) {
+  return <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${color} ${className}`}>{children}</span>
 }
 
 export function Row({ a, b, className = '' }: { a: string; b: string; className?: string }) {
@@ -55,17 +55,17 @@ export function Hero({ title, sub, to, icon = 'giotNuoc' }: { title: string; sub
   )
 }
 
-export function Tile({ icon, title, sub, to, color }: { icon: TenBieuTuong; title: string; sub: string; to: string; color: string }) {
+export function Tile({ icon, title, sub, to, color, prominent = false }: { icon: TenBieuTuong; title: string; sub: string; to: string; color: string; prominent?: boolean }) {
   return (
-    <Card to={to} className="flex items-center gap-3">
-      <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full ${color}`}>
-        <BieuTuong ten={icon} className="h-5 w-5 text-blue-700" />
+    <Card to={to} className={`${prominent ? 'relative flex min-h-40 flex-col items-center gap-2 !p-4 text-center' : 'flex items-center gap-3'}`}>
+      <span className={`grid shrink-0 place-items-center rounded-full ${prominent ? 'h-12 w-12' : 'h-11 w-11'} ${color}`}>
+        <BieuTuong ten={icon} className={`${prominent ? 'h-6 w-6' : 'h-5 w-5'} text-blue-700`} />
       </span>
-      <div className="flex-1 min-w-0">
-        <div className="text-lg font-bold">{title}</div>
-        <div className="text-base font-medium text-slate-500">{sub}</div>
+      <div className={`${prominent ? 'w-full pb-3' : 'min-w-0 flex-1'}`}>
+        <div className={prominent ? 'text-base font-bold leading-snug' : 'font-semibold text-sm'}>{title}</div>
+        <div className={prominent ? 'mt-0.5 text-sm font-medium leading-snug text-slate-600' : 'text-xs text-slate-500'}>{sub}</div>
       </div>
-      <BieuTuong ten="muiTenTrai" className="h-4 w-4 rotate-180 text-slate-400" />
+      <BieuTuong ten="muiTenTrai" className={`${prominent ? 'absolute bottom-3 right-3 h-4 w-4' : 'h-4 w-4'} rotate-180 text-slate-400`} />
     </Card>
   )
 }

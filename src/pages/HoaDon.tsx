@@ -1,10 +1,11 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useSyncExternalStore } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import BieuTuong from '../components/BieuTuong'
 import PageBanner from '../components/PageBanner'
 import { Btn, Card } from '../components/ui'
 import { danhSachHoaDon } from '../data/mock'
+import { dangKyThayDoiThanhToanDemo, layDanhSachThanhToanDemo } from '../data/trangThaiThanhToanDemo'
 
 type ThongTinHoaDon = {
   soHoaDon: string
@@ -16,6 +17,7 @@ type ThongTinHoaDon = {
   chiSoCu: number
   chiSoMoi: number
   daThanhToan: boolean
+  daThanhToanDemo?: boolean
   hoaDonDienTu?: {
     kyHieu: string
     maSoThue: string
@@ -29,7 +31,7 @@ type BoLocHoaDon = { tuKy: string; denKy: string; trangThai: 'ALL' | 'DA_THANH_T
 type CheDoHienThi = 'list' | 'chart'
 type SoKyBieuDo = 6 | 12
 
-function TheHoaDon({ soHoaDon, thang, soTien, sanLuong, ngay, chiSoCu, chiSoMoi, daThanhToan, hoaDonDienTu }: ThongTinHoaDon) {
+function TheHoaDon({ soHoaDon, thang, soTien, sanLuong, ngay, chiSoCu, chiSoMoi, daThanhToan, daThanhToanDemo = false, hoaDonDienTu }: ThongTinHoaDon) {
   const navigate = useNavigate()
   const [hddtDangMo, datHddtDangMo] = useState(false)
   const detailPath = `/bills/detail?period=${encodeURIComponent(thang)}`
@@ -49,7 +51,7 @@ function TheHoaDon({ soHoaDon, thang, soTien, sanLuong, ngay, chiSoCu, chiSoMoi,
         </div>
         <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-[10px] font-semibold ${daThanhToan ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-700'}`}>
           <BieuTuong ten={daThanhToan ? 'xacNhan' : 'dongHo'} className="h-3 w-3" />
-          {daThanhToan ? 'Đã thanh toán' : 'Chưa thanh toán'}
+          {daThanhToanDemo ? 'Đã thanh toán (demo)' : daThanhToan ? 'Đã thanh toán' : 'Chưa thanh toán'}
         </span>
       </div>
 
@@ -82,7 +84,7 @@ function TheHoaDon({ soHoaDon, thang, soTien, sanLuong, ngay, chiSoCu, chiSoMoi,
           <div className="flex items-start gap-1.5">
             <BieuTuong ten="lich" className="mt-0.5 h-4 w-4 shrink-0 text-[#168fe0]" />
             <div className="min-w-0">
-              <span className="block text-[10px] leading-tight text-slate-500">{daThanhToan ? 'Ngày thanh toán' : 'Hạn thanh toán'}</span>
+              <span className="block text-[10px] leading-tight text-slate-500">{daThanhToanDemo ? 'Ngày mô phỏng' : daThanhToan ? 'Ngày thanh toán' : 'Hạn thanh toán'}</span>
               <b className={`block text-xs leading-tight ${daThanhToan ? 'text-emerald-700' : 'text-red-600'}`}>{ngay}</b>
             </div>
           </div>
@@ -98,13 +100,23 @@ function TheHoaDon({ soHoaDon, thang, soTien, sanLuong, ngay, chiSoCu, chiSoMoi,
           >
             Xem chi tiết <span aria-hidden="true">›</span>
           </button>
-          <button
-            type="button"
-            onClick={() => datHddtDangMo(true)}
-            className="min-h-9 rounded-full bg-[#087fc4] px-3 text-xs font-semibold text-white"
-          >
-            HĐĐT
-          </button>
+          {daThanhToanDemo ? (
+            <button
+              type="button"
+              onClick={() => navigate(`/payment/receipt?period=${encodeURIComponent(thang)}`)}
+              className="min-h-9 rounded-full bg-emerald-100 px-3 text-xs font-semibold text-emerald-800"
+            >
+              Biên nhận demo
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => datHddtDangMo(true)}
+              className="min-h-9 rounded-full bg-[#087fc4] px-3 text-xs font-semibold text-white"
+            >
+              HĐĐT
+            </button>
+          )}
         </div>
       ) : (
         <button
@@ -199,6 +211,11 @@ function TheHoaDon({ soHoaDon, thang, soTien, sanLuong, ngay, chiSoCu, chiSoMoi,
 }
 
 export default function HoaDon() {
+  const thanhToanDemo = useSyncExternalStore(
+    dangKyThayDoiThanhToanDemo,
+    layDanhSachThanhToanDemo,
+    layDanhSachThanhToanDemo,
+  )
   const [cheDoHienThi, datCheDoHienThi] = useState<CheDoHienThi>('list')
   const [soKyBieuDo, datSoKyBieuDo] = useState<SoKyBieuDo>(6)
   const [tuKy, datTuKy] = useState('')
@@ -219,7 +236,21 @@ export default function HoaDon() {
     boLocDaTim.tuKy && boLocDaTim.denKy &&
     layKhoaKy(boLocDaTim.tuKy) > layKhoaKy(boLocDaTim.denKy),
   )
-  const hoaDonDaLoc = danhSachHoaDon
+  const hoaDonHienTai = danhSachHoaDon.map((hoaDon) => {
+    const giaoDichDemo = thanhToanDemo[hoaDon.soHoaDon]
+    const daThanhToanDemo = !hoaDon.daThanhToan && giaoDichDemo?.trangThai === 'success'
+    const ngayThanhToanDemo = giaoDichDemo?.thoiGianThanhToan
+      ? new Intl.DateTimeFormat('vi-VN').format(new Date(giaoDichDemo.thoiGianThanhToan))
+      : hoaDon.ngay
+
+    return {
+      ...hoaDon,
+      daThanhToan: hoaDon.daThanhToan || daThanhToanDemo,
+      daThanhToanDemo,
+      ngay: daThanhToanDemo ? ngayThanhToanDemo : hoaDon.ngay,
+    }
+  })
+  const hoaDonDaLoc = hoaDonHienTai
     .filter((hoaDon) => {
       const khoaKy = layKhoaKy(hoaDon.thang)
       return (!boLocDaTim.tuKy || khoaKy >= layKhoaKy(boLocDaTim.tuKy)) &&
@@ -228,7 +259,7 @@ export default function HoaDon() {
           (boLocDaTim.trangThai === 'DA_THANH_TOAN') === hoaDon.daThanhToan)
     })
     .sort((a, b) => layKhoaKy(b.thang).localeCompare(layKhoaKy(a.thang)))
-  const duLieuBieuDo = [...danhSachHoaDon]
+  const duLieuBieuDo = [...hoaDonHienTai]
     .sort((a, b) => layKhoaKy(a.thang).localeCompare(layKhoaKy(b.thang)))
     .slice(-soKyBieuDo)
   const mucTieuThuCaoNhat = Math.max(...duLieuBieuDo.map((hoaDon) => hoaDon.sanLuong), 1)
