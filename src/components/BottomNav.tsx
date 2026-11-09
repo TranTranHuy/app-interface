@@ -15,7 +15,7 @@ export default function BottomNav() {
   return (
     <nav aria-label="Điều hướng chính" className="fixed bottom-0 left-1/2 z-10 flex w-full max-w-[430px] -translate-x-1/2 border-t border-sky-100 bg-white/95 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))] shadow-[0_-4px_16px_rgba(16,87,143,0.06)] md:max-w-2xl">
       {tabs.map((t) => {
-        const dangChon = t.match.includes(pathname)
+        const dangChon = t.match.some((path) => pathname === path || (path !== '/' && pathname.startsWith(`${path}/`)))
         return (
           <button
             key={t.to}

@@ -101,7 +101,7 @@ export default function TrangChu() {
                     aria-label={`Thông báo ${viTri + 1} trên ${tinMoiNhat.length}`}
                   >
                     <Card
-                      to={`/notifications?notification=${encodeURIComponent(tin.id)}`}
+                      to={`/notifications/${encodeURIComponent(tin.id)}`}
                       bg={tin.category === 'invoice' ? 'bg-white' : 'bg-red-50'}
                       className="flex min-h-28 items-start gap-3 border border-slate-100"
                     >

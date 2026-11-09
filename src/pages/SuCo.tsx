@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import SuccessToast from '../components/SuccessToast'
@@ -14,13 +15,13 @@ import {
 } from '../data/mock'
 
 export default function SuCo() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [items, setItems] = useState(sampleIncidents)
   const [startDate, setStartDate] = useState('')
   const [endDate, setEndDate] = useState('')
   const [appliedDates, setAppliedDates] = useState({ start: '', end: '' })
   const [type, setType] = useState<IncidentType | 'all'>('all')
   const [causeFilter, setCauseFilter] = useState('all')
-  const [selected, setSelected] = useState<Incident | null>(null)
   const [creating, setCreating] = useState(false)
   const [draftType, setDraftType] = useState<IncidentType>('water')
   const [draftReason, setDraftReason] = useState(incidentReasonsByType.water[0])
@@ -29,6 +30,8 @@ export default function SuCo() {
   const attachmentUrls = useRef(new Set<string>())
   const [notice, setNotice] = useState('')
   const [invalidDateRange, setInvalidDateRange] = useState(false)
+  const incidentId = searchParams.get('incident')
+  const selected = incidentId ? items.find((item) => item.id === incidentId) : undefined
 
   useEffect(() => () => {
     attachmentUrls.current.forEach((url) => URL.revokeObjectURL(url))
@@ -62,7 +65,6 @@ export default function SuCo() {
 
   function closeDialogs() {
     if (creating) discardDraftAttachments()
-    setSelected(null)
     setCreating(false)
   }
 
@@ -111,6 +113,53 @@ export default function SuCo() {
     setCreating(false)
     setNotice('Gửi báo sự cố thành công.')
     event.currentTarget.reset()
+  }
+
+  if (incidentId) {
+    return (
+      <>
+        <Header back="/incidents" title="Chi tiết sự cố" />
+        <main className="space-y-3 px-4 pb-24">
+          {selected ? (
+            <Card className="space-y-3 !p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h1 className="font-semibold text-lg text-[#124b84]">{incidentTypeLabels[selected.type]}</h1>
+                  <p className="mt-1 text-xs text-slate-500">{selected.id}</p>
+                </div>
+                <Chip color={selected.status === 'Đang xử lý' ? 'bg-orange-100 text-orange-700' : selected.status === 'Đã hoàn tất' ? 'bg-emerald-100 text-emerald-700' : 'bg-sky-100 text-[#087fc4]'}>{selected.status}</Chip>
+              </div>
+              <div className="divide-y divide-slate-100 text-sm">
+                <p className="py-2"><b>Lý do:</b> {selected.reason}</p>
+                <p className="py-2"><b>Nguyên nhân:</b> {selected.cause}</p>
+                <p className="py-2"><b>Ghi chú:</b> {selected.description || 'Không có ghi chú'}</p>
+                <p className="py-2"><b>Địa chỉ:</b> {selected.address}</p>
+                <p className="py-2"><b>Ngày gửi:</b> {new Date(`${selected.date}T00:00:00`).toLocaleDateString('vi-VN')}</p>
+              </div>
+              <div className="text-sm">
+                <b>Hình ảnh đính kèm:</b>
+                {selected.attachments.length === 0
+                  ? <p className="mt-1 text-slate-500">Không có hình ảnh.</p>
+                  : <div className="mt-2 grid grid-cols-2 gap-2">{selected.attachments.map((image) => <img key={image.url} src={image.url} alt={image.name} className="max-h-40 w-full rounded-lg border border-slate-200 object-cover" />)}</div>}
+              </div>
+              <div className="text-sm">
+                <b>Ghi chú của nhân viên:</b>
+                {selected.technicianNotes.length === 0
+                  ? <p className="mt-1 text-slate-500">Chưa có cập nhật từ nhân viên.</p>
+                  : <ul className="mt-1 list-inside list-disc space-y-1 text-slate-700">{selected.technicianNotes.map((note) => <li key={note}>{note}</li>)}</ul>}
+              </div>
+            </Card>
+          ) : (
+            <Card className="space-y-3">
+              <p className="font-semibold text-slate-900">Không tìm thấy sự cố.</p>
+              <button type="button" onClick={() => setSearchParams({})} className="min-h-11 w-full rounded-full bg-[#087fc4] px-4 text-sm font-semibold text-white">
+                Quay lại danh sách sự cố
+              </button>
+            </Card>
+          )}
+        </main>
+      </>
+    )
   }
 
   return (
@@ -173,7 +222,7 @@ export default function SuCo() {
           </div>
           {filtered.length === 0 && <Card className="text-sm text-slate-600">Không tìm thấy sự cố phù hợp.</Card>}
           {filtered.map((item) => (
-            <button key={item.id} type="button" onClick={() => setSelected(item)} className="block w-full text-left">
+            <button key={item.id} type="button" onClick={() => setSearchParams({ incident: item.id })} className="block w-full text-left">
               <Card className="border border-slate-100 !p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -201,7 +250,7 @@ export default function SuCo() {
         </section>
       </main>
 
-      {(selected || creating) && (
+      {creating && (
         <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4" role="presentation" onClick={closeDialogs}>
           <section
             role="dialog"
@@ -211,34 +260,10 @@ export default function SuCo() {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 id="incident-dialog-title" className="font-semibold text-slate-900">{creating ? 'Tạo sự cố' : 'Chi tiết sự cố'}</h2>
+              <h2 id="incident-dialog-title" className="font-semibold text-slate-900">Tạo sự cố</h2>
               <button type="button" aria-label="Đóng" onClick={closeDialogs} className="min-h-11 min-w-11 text-xl text-slate-600">×</button>
             </div>
-            {selected ? (
-              <div className="space-y-3 text-sm">
-                <p><b>Mã yêu cầu:</b> {selected.id}</p>
-                <p><b>Loại yêu cầu:</b> {incidentTypeLabels[selected.type]}</p>
-                <p><b>Lý do:</b> {selected.reason}</p>
-                <p><b>Nguyên nhân:</b> {selected.cause}</p>
-                <p><b>Ghi chú:</b> {selected.description || 'Không có ghi chú'}</p>
-                <p><b>Địa chỉ:</b> {selected.address}</p>
-                <p><b>Ngày gửi:</b> {new Date(`${selected.date}T00:00:00`).toLocaleDateString('vi-VN')}</p>
-                <p><b>Trạng thái:</b> {selected.status}</p>
-                <div>
-                  <b>Hình ảnh đính kèm:</b>
-                  {selected.attachments.length === 0
-                    ? <p className="mt-1 text-slate-500">Không có hình ảnh.</p>
-                    : <div className="mt-2 grid grid-cols-2 gap-2">{selected.attachments.map((image) => <img key={image.url} src={image.url} alt={image.name} className="max-h-40 w-full rounded-lg border border-slate-200 object-cover" />)}</div>}
-                </div>
-                <div>
-                  <b>Ghi chú của nhân viên:</b>
-                  {selected.technicianNotes.length === 0
-                    ? <p className="mt-1 text-slate-500">Chưa có cập nhật từ nhân viên.</p>
-                    : <ul className="mt-1 list-inside list-disc space-y-1 text-slate-700">{selected.technicianNotes.map((note) => <li key={note}>{note}</li>)}</ul>}
-                </div>
-              </div>
-            ) : (
-              <form className="space-y-3" onSubmit={createIncident}>
+            <form className="space-y-3" onSubmit={createIncident}>
                 <label className="block text-sm font-medium text-slate-700">
                   Loại yêu cầu
                   <select name="type" required value={draftType} onChange={(event) => {
@@ -272,8 +297,7 @@ export default function SuCo() {
                 {attachments.length > 0 && <div className="grid grid-cols-3 gap-2">{attachments.map((image) => <img key={image.url} src={image.url} alt={`Ảnh đã chọn: ${image.name}`} className="h-20 w-full rounded-lg border border-slate-200 object-cover" />)}</div>}
                 <p className="text-xs text-slate-500">Địa chỉ hợp đồng: {mockAccount.address}</p>
                 <button type="submit" className="min-h-11 w-full rounded-full bg-gradient-to-r from-[#087fc4] to-[#19a8f5] px-4 font-semibold text-white">Gửi báo sự cố</button>
-              </form>
-            )}
+            </form>
           </section>
         </div>
       )}

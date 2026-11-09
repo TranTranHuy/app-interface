@@ -7,7 +7,7 @@ import { Card, Row } from '../components/ui'
 import { mockAccount } from '../data/mock'
 import { khoaLuuPhienDangNhap } from '../xacThuc'
 
-type ProfileDialog = 'reading' | 'password' | 'contract' | 'referral' | 'logout' | null
+type ProfileDialog = 'reading' | 'contract' | 'referral' | 'logout' | null
 type WatermarkedImage = { file: File; capturedAt: string; coordinates: string }
 const referralCodeStorageKey = 'employee-referral-code'
 
@@ -160,20 +160,6 @@ export default function ThongTinTaiKhoan() {
     closeDialog()
   }
 
-  function submitPassword(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    // TODO: Replace this mock validation with the password-change API when its contract is available.
-    const formData = new FormData(event.currentTarget)
-    const password = String(formData.get('newPassword') ?? '')
-    const confirmation = String(formData.get('confirmPassword') ?? '')
-    if (password !== confirmation) {
-      setFormError('Mật khẩu mới và xác nhận mật khẩu không khớp.')
-      return
-    }
-    setMessage('Đổi mật khẩu thành công.')
-    closeDialog()
-  }
-
   function logout() {
     localStorage.removeItem(khoaLuuPhienDangNhap)
     sessionStorage.removeItem(khoaLuuPhienDangNhap)
@@ -224,7 +210,7 @@ export default function ThongTinTaiKhoan() {
         <Card className="!p-4">
           <h2 className="mb-2 font-semibold text-slate-900">Tiện ích tài khoản</h2>
           <div className="space-y-2">
-            <button type="button" onClick={() => openDialog('password')} className="min-h-11 w-full rounded-lg border border-slate-200 px-3 text-left font-medium text-slate-800">Đổi mật khẩu</button>
+            <button type="button" onClick={() => navigate('/profile/change-password')} className="min-h-11 w-full rounded-lg border border-slate-200 px-3 text-left font-medium text-slate-800">Đổi mật khẩu</button>
             <button type="button" onClick={() => openDialog('referral')} className="min-h-11 w-full rounded-lg border border-slate-200 px-3 text-left font-medium text-slate-800">Mã giới thiệu nhân viên</button>
           </div>
         </Card>
@@ -246,10 +232,9 @@ export default function ThongTinTaiKhoan() {
             <div className="mb-4 flex items-center justify-between gap-4">
               <h2 id="profile-dialog-title" className="font-semibold text-slate-900">
                 {dialog === 'reading' ? 'Khai báo chỉ số nước'
-                  : dialog === 'password' ? 'Đổi mật khẩu'
-                    : dialog === 'contract' ? 'Chi tiết hợp đồng'
-                      : dialog === 'referral' ? 'Mã giới thiệu nhân viên'
-                        : 'Xác nhận đăng xuất'}
+                  : dialog === 'contract' ? 'Chi tiết hợp đồng'
+                    : dialog === 'referral' ? 'Mã giới thiệu nhân viên'
+                      : 'Xác nhận đăng xuất'}
               </h2>
               <button type="button" aria-label="Đóng" onClick={closeDialog} className="min-h-11 min-w-11 text-xl text-slate-600">×</button>
             </div>
@@ -273,23 +258,6 @@ export default function ThongTinTaiKhoan() {
                 <p className="text-xs text-slate-500">Cho phép truy cập vị trí để thêm dấu GPS vào ảnh xác minh.</p>
                 {formError && <p role="alert" className="text-sm text-red-600">{formError}</p>}
                 <button type="submit" disabled={processingImage} className="min-h-11 w-full rounded-full bg-gradient-to-r from-[#087fc4] to-[#19a8f5] px-4 font-semibold text-white disabled:opacity-50">Lưu khai báo</button>
-              </form>
-            ) : dialog === 'password' ? (
-              <form className="space-y-3" onSubmit={submitPassword}>
-                <label className="block text-sm font-medium text-slate-700">
-                  Mật khẩu hiện tại
-                  <input name="currentPassword" required type="password" autoComplete="current-password" className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3" />
-                </label>
-                <label className="block text-sm font-medium text-slate-700">
-                  Mật khẩu mới
-                  <input name="newPassword" required minLength={8} type="password" autoComplete="new-password" className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3" />
-                </label>
-                <label className="block text-sm font-medium text-slate-700">
-                  Xác nhận mật khẩu mới
-                  <input name="confirmPassword" required minLength={8} type="password" autoComplete="new-password" className="mt-1 min-h-11 w-full rounded-lg border border-slate-300 px-3" />
-                </label>
-                {formError && <p role="alert" className="text-sm text-red-600">{formError}</p>}
-                <button type="submit" className="min-h-11 w-full rounded-full bg-gradient-to-r from-[#087fc4] to-[#19a8f5] px-4 font-semibold text-white">Xác nhận đổi mật khẩu</button>
               </form>
             ) : dialog === 'contract' ? (
               <div className="space-y-1">

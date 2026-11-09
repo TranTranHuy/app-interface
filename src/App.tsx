@@ -6,7 +6,9 @@ import ChiTietHoaDon from './pages/ChiTietHoaDon'
 import ThanhToan from './pages/ThanhToan'
 import BienNhanThanhToan from './pages/BienNhanThanhToan'
 import ThongBao from './pages/ThongBao'
+import ThongBaoChiTiet from './pages/ThongBaoChiTiet'
 import SuCo from './pages/SuCo'
+import DoiMatKhau from './pages/DoiMatKhau'
 import ThongTinTaiKhoan from './pages/ThongTinTaiKhoan'
 import DangNhap from './pages/DangNhap'
 import HuongDanSuDung from './pages/HuongDanSuDung'
@@ -32,7 +34,9 @@ export default function App() {
           <Route path="/pay" element={<ThanhToan />} />
           <Route path="/payment/receipt" element={<BienNhanThanhToan />} />
           <Route path="/notifications" element={<ThongBao />} />
+          <Route path="/notifications/:notificationId" element={<ThongBaoChiTiet />} />
           <Route path="/incidents" element={<SuCo />} />
+          <Route path="/profile/change-password" element={<DoiMatKhau />} />
           <Route path="/profile" element={<ThongTinTaiKhoan />} />
           <Route path="/khai-bao-chi-so-nuoc" element={<Navigate to="/profile?dialog=reading" replace />} />
         </Route>

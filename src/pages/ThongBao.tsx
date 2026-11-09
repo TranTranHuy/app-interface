@@ -1,10 +1,10 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useState, useSyncExternalStore } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import PageBanner from '../components/PageBanner'
 import { Card } from '../components/ui'
 import { notifications, type NotificationCategory, type NotificationItem } from '../data/mock'
-import { dangKyThayDoiThongBao, danhDauThongBaoDaDoc, danhSachThongBaoDaDoc, layThongBaoDaDoc } from '../data/trangThaiThongBao'
+import { dangKyThayDoiThongBao, danhSachThongBaoDaDoc, layThongBaoDaDoc } from '../data/trangThaiThongBao'
 
 type Filter = 'all' | NotificationCategory
 
@@ -37,12 +37,9 @@ function NoticeIcon({ category }: { category: NotificationCategory }) {
 
 export default function ThongBao() {
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
   const [filter, setFilter] = useState<Filter>('all')
-  const [selected, setSelected] = useState<NotificationItem | null>(null)
   const readState = useSyncExternalStore(dangKyThayDoiThongBao, layThongBaoDaDoc, () => '')
   const readIds = danhSachThongBaoDaDoc(readState)
-  const notificationId = searchParams.get('notification')
   const items = notifications
   const filters: [Filter, string][] = [
     ['all', 'Tất cả'],
@@ -52,27 +49,8 @@ export default function ThongBao() {
   ]
   const visibleItems = items.filter((item) => filter === 'all' || item.category === filter)
 
-  useEffect(() => {
-    if (!notificationId) return
-
-    const notification = notifications.find((item) => item.id === notificationId)
-    if (notification) {
-      danhDauThongBaoDaDoc(notification.id)
-      setSelected(notification)
-    }
-    setSearchParams({}, { replace: true })
-  }, [notificationId, setSearchParams])
-
   function openNotification(item: NotificationItem) {
-    // TODO: Replace this mock read-state update with the notification API when its contract is available.
-    danhDauThongBaoDaDoc(item.id)
-
-    if (item.relatedPath) {
-      navigate(item.relatedPath)
-      return
-    }
-
-    setSelected({ ...item, read: true })
+    navigate(`/notifications/${encodeURIComponent(item.id)}`)
   }
 
   return (
@@ -123,43 +101,6 @@ export default function ThongBao() {
           ))}
         </section>
       </main>
-
-      {selected && (
-        <div className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 p-4" role="presentation" onClick={() => setSelected(null)}>
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="notification-detail-title"
-            className="w-full max-w-[430px] rounded-2xl bg-white p-5 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="mb-4 flex items-center justify-between gap-4">
-              <h2 id="notification-detail-title" className="font-semibold text-slate-900">Chi tiết thông báo</h2>
-              <button type="button" aria-label="Đóng" onClick={() => setSelected(null)} className="min-h-11 min-w-11 text-xl text-slate-600">×</button>
-            </div>
-            {selected.invoice ? (
-              <article>
-                <h3 className="text-center text-xl font-bold tracking-wide text-[#1676db]">THÔNG BÁO TIỀN NƯỚC</h3>
-                <p className="mt-3 text-right text-sm italic text-slate-500">
-                  Ngày gửi: <time dateTime={selected.createdAt}>{selected.timeLabel.split(' ')[0]}</time>
-                </p>
-                <p className="mt-4 text-sm leading-6 text-slate-800">
-                  Thông báo tiền nước kỳ {selected.invoice.period}. Mã KH: {selected.invoice.customerCode}. CSC: {selected.invoice.previousReading}. CSM: {selected.invoice.currentReading}. TT: {selected.invoice.consumption}. ST: {selected.invoice.amount} đ. Hạn TT đến ngày {selected.invoice.dueDate}. LH: {selected.invoice.contactPhone}. Chi tiết:{' '}
-                  <a href={selected.invoice.website} target="_blank" rel="noreferrer" className="break-all text-[#087fc4] underline">
-                    {selected.invoice.website}
-                  </a>
-                </p>
-              </article>
-            ) : (
-              <>
-                <p className="font-semibold text-slate-900">{selected.title}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-700">{selected.detail ?? selected.message}</p>
-                <time className="mt-4 block text-xs text-slate-500" dateTime={selected.createdAt}>{selected.timeLabel}</time>
-              </>
-            )}
-          </section>
-        </div>
-      )}
     </>
   )
 }
