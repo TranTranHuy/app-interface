@@ -119,7 +119,7 @@ export default function SuCo() {
     return (
       <>
         <Header back="/incidents" title="Chi tiết sự cố" />
-        <main className="space-y-3 px-4 pb-24">
+        <main className="readable-page space-y-3 px-4 pb-24">
           {selected ? (
             <Card className="space-y-3 !p-4">
               <div className="flex items-start justify-between gap-3">
@@ -166,7 +166,7 @@ export default function SuCo() {
     <>
       <Header title="Mini App" />
       <SuccessToast message={notice} onClose={() => setNotice('')} />
-      <main className="space-y-4 px-4 pb-24">
+      <main className="readable-page space-y-4 px-4 pb-24">
         <PageBanner title="Quản lý sự cố" description="Gửi báo sự cố và theo dõi tiến độ xử lý." image="/banner-su-co.png" textPosition="center" />
 
         <Card className="!p-4">
@@ -257,7 +257,7 @@ export default function SuCo() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="incident-dialog-title"
-            className="max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-2xl bg-white p-5 shadow-xl"
+            className="readable-page max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-2xl bg-white p-5 shadow-xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between gap-4">

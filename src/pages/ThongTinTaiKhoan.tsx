@@ -173,7 +173,7 @@ export default function ThongTinTaiKhoan() {
     <>
       <Header title="Thông tin tài khoản" />
       <SuccessToast message={message} onClose={() => setMessage('')} />
-      <main className="space-y-3 px-4 pb-24">
+      <main className="readable-page space-y-3 px-4 pb-24">
         <PageBanner title="Thông tin tài khoản" description="Hồ sơ cá nhân, hợp đồng và tiện ích tài khoản." />
 
         <Card className="!p-4">
@@ -257,7 +257,7 @@ export default function ThongTinTaiKhoan() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="profile-dialog-title"
-            className="max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-2xl bg-white p-5 shadow-xl"
+            className="readable-page max-h-[90dvh] w-full max-w-[430px] overflow-y-auto rounded-2xl bg-white p-5 shadow-xl"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between gap-4">

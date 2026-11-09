@@ -19,7 +19,7 @@ export default function ThongBaoChiTiet() {
   return (
     <>
       <Header back="/notifications" title="Chi tiết thông báo" />
-      <main className="space-y-3 px-4 pb-24">
+      <main className="readable-page space-y-3 px-4 pb-24">
         {!notification ? (
           <Card className="space-y-3">
             <p className="font-semibold text-slate-900">Không tìm thấy thông báo.</p>
@@ -33,14 +33,14 @@ export default function ThongBaoChiTiet() {
                   <BieuTuong ten={notification.category === 'invoice' ? 'hoaDon' : notification.category === 'water_schedule' ? 'giotNuoc' : 'loa'} className="h-5 w-5" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <h1 className="font-semibold text-slate-900">{notification.title}</h1>
-                  <time className="mt-1 block text-xs text-slate-500" dateTime={notification.createdAt}>{notification.timeLabel}</time>
+                  <h1 className="text-lg font-bold leading-6 text-slate-900">{notification.title}</h1>
+                  <time className="mt-1 block text-sm font-medium text-slate-500" dateTime={notification.createdAt}>{notification.timeLabel}</time>
                 </div>
               </div>
               {notification.invoice ? (
                 <div className="mt-4 border-t border-slate-100 pt-3">
-                  <h2 className="text-center text-lg font-bold tracking-wide text-[#1676db]">THÔNG BÁO TIỀN NƯỚC</h2>
-                  <div className="mt-2 divide-y divide-slate-100">
+                  <h2 className="text-center text-xl font-bold tracking-wide text-[#1676db]">THÔNG BÁO TIỀN NƯỚC</h2>
+                  <div className="mt-2 divide-y divide-slate-100 [&>div]:py-3 [&>div]:text-lg [&>div>span]:font-medium">
                     <Row a="Kỳ hóa đơn" b={notification.invoice.period} />
                     <Row a="Mã khách hàng" b={notification.invoice.customerCode} />
                     <Row a="Chỉ số cũ" b={`${notification.invoice.previousReading} m³`} />
@@ -50,12 +50,12 @@ export default function ThongBaoChiTiet() {
                     <Row a="Hạn thanh toán" b={notification.invoice.dueDate} />
                     <Row a="Hotline" b={notification.invoice.contactPhone} />
                   </div>
-                  <a href={notification.invoice.website} target="_blank" rel="noreferrer" className="mt-3 block break-all text-sm text-[#087fc4] underline">
+                  <a href={notification.invoice.website} target="_blank" rel="noreferrer" className="mt-3 block break-all text-base font-semibold text-[#087fc4] underline">
                     {notification.invoice.website}
                   </a>
                 </div>
               ) : (
-                <p className="mt-4 border-t border-slate-100 pt-3 text-sm leading-6 text-slate-700">
+                <p className="mt-4 border-t border-slate-100 pt-3 text-base font-medium leading-7 text-slate-700">
                   {notification.detail ?? notification.message}
                 </p>
               )}

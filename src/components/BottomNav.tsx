@@ -22,7 +22,7 @@ export default function BottomNav() {
             type="button"
             aria-current={dangChon ? 'page' : undefined}
             onClick={() => chuyenTrang(t.to)}
-            className={`flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-[10px] leading-tight ${dangChon ? 'font-semibold text-[#087fc4]' : 'text-slate-500'}`}
+            className={`flex min-w-0 flex-1 flex-col items-center gap-1 px-0.5 text-center text-xs font-semibold leading-tight ${dangChon ? 'text-[#087fc4]' : 'text-slate-500'}`}
           >
             <BieuTuong ten={t.icon} className="h-5 w-5" />
             <span>{t.label}</span>

@@ -14,8 +14,8 @@ export default function PageBanner({ title, description, image, textPosition = '
     >
       <div className={`absolute inset-0 ${textPosition === 'center' ? 'bg-white/10' : `bg-gradient-to-r ${image ? 'from-[#dff4ff]/75 via-[#e8f7ff]/35' : 'from-[#dff4ff]/95 via-[#e8f7ff]/80'} to-transparent`}`} />
       <div className={`relative z-10 ${textPosition === 'center' ? 'max-w-[65%]' : 'max-w-[74%]'}`}>
-        <h1 className="text-lg font-bold leading-tight text-[#124b84]">{title}</h1>
-        <p className="mt-1 text-xs leading-4 text-slate-700 sm:text-sm">{description}</p>
+        <h1 className="text-xl font-bold leading-tight text-[#124b84]">{title}</h1>
+        <p className="mt-1 text-sm font-medium leading-5 text-slate-700">{description}</p>
       </div>
     </section>
   )

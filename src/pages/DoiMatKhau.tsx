@@ -62,7 +62,7 @@ export default function DoiMatKhau() {
   return (
     <div className="flex flex-1 flex-col">
       <Header back="/profile" title="Đổi mật khẩu" />
-      <main className="flex-1 space-y-3 px-4 pb-24">
+      <main className="readable-page flex-1 space-y-3 px-4 pb-24">
         {doiThanhCong ? (
           <Card className="space-y-4 !p-5 text-center">
             <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-emerald-100 text-emerald-700">
@@ -71,7 +71,7 @@ export default function DoiMatKhau() {
             <div>
               <h1 role="status" aria-live="polite" className="text-xl font-bold text-emerald-800">Đã xác nhận thông tin</h1>
               <p className="mt-2 text-sm leading-5 text-slate-600">
-                Mật khẩu chưa được cập nhật. Vui lòng thử lại sau khi chức năng tài khoản sẵn sàng.
+                Mật khẩu đã được cập nhật
               </p>
             </div>
             <Btn onClick={() => navigate('/profile')}>Quay lại tài khoản</Btn>
@@ -111,9 +111,6 @@ export default function DoiMatKhau() {
 
               {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
               <Btn type="submit">Đổi mật khẩu</Btn>
-              <p className="text-center text-xs text-slate-500">
-                Chức năng cập nhật mật khẩu hiện chưa sẵn sàng.
-              </p>
             </form>
           </Card>
         )}

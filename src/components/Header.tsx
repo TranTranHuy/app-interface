@@ -21,8 +21,8 @@ export default function Header({ back, title }: { back?: string; title?: string 
       )}
       <LogoHauGiang className="h-11 w-11 shrink-0 rounded-full bg-white object-contain p-0.5" />
       <div className="flex-1 leading-tight">
-        <div className="text-xs text-slate-500">Mini App</div>
-        <div className="font-bold text-[#124b84]">{title ?? 'Cấp nước Hậu Giang'}</div>
+        <div className="text-sm font-medium text-slate-500">Mini App</div>
+        <div className="text-lg font-bold text-[#124b84]">{title ?? 'Cấp nước Hậu Giang'}</div>
       </div>
       <button
         type="button"
